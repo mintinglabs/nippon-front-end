@@ -1,0 +1,121 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@100..900&display=swap');
+@import "tailwindcss";
+
+
+
+:root {
+  --background: #0c274c;
+  --foreground: #0c274c;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0c274c;
+    --foreground: #0c274c;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: "Noto Sans TC", sans-serif;
+  font-optical-sizing: auto;
+}
+
+input:focus {
+  outline: none;
+  border: 0 !important;
+}
+
+@keyframes bg-scroll-x {
+  0% {
+    background-position: 0 4000px;
+    ;
+  }
+
+  100% {
+    background-position: 0 0;
+  }
+}
+
+.bg-scroll-x {
+  background-size: cover;
+  background-repeat: repeat-y;
+  animation: bg-scroll-x 20s linear infinite;
+}
+
+@keyframes bg-scroll-y {
+  0% {
+    background-position: 0 980px;
+  }
+
+  100% {
+    background-position: 0 0;
+  }
+}
+
+@keyframes bg-scroll-y-desktop {
+  0% {
+    background-position: 0 2285px;
+  }
+
+  100% {
+    background-position: 0 0;
+  }
+}
+
+.bg-scroll-y {
+  background-size: 343px 980px;
+  background-repeat: repeat-y;
+  animation: bg-scroll-y 20s linear infinite;
+}
+
+.bg-scroll-y-desktop {
+  background-size: 800px 2285px;
+  background-repeat: repeat-y;
+  animation: bg-scroll-y-desktop 20s linear infinite;
+}
+
+/* 外部loading 加载样式 */
+.loader {
+  display: block;
+  position: relative;
+  height: 24px;
+  width: 80%;
+  border: 2px solid #fff;
+  border-radius: 100px;
+  overflow: hidden;
+}
+
+.loader::after {
+  content: '';
+  width: 89px;
+  height: 16px;
+  margin-top: 2px;
+  background: linear-gradient(272.65deg, #279EFE 4.53%, #FFFFFF 38.12%, #FE91FF 63.95%, #2CF9FF 94.09%);
+  border-radius: 100px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  box-sizing: border-box;
+  animation: animloader 3s linear infinite;
+}
+
+@keyframes animloader {
+  0% {
+    left: 0;
+    transform: translateX(-100%);
+  }
+
+  100% {
+    left: 100%;
+    transform: translateX(0%);
+  }
+}
