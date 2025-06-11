@@ -12,9 +12,9 @@ export default function Loading() {
     }
   }, [imgRef]);
   return (
-    <div className="h-[100vh] flex flex-col items-center bg-[#003888]">
+    <div className="h-[100vh] md:w-[800px] flex flex-col items-center bg-[#003888] m-center">
       <div
-        className="absolute top-0 left-0 w-[100%] h-[30%] bg-[#02274F] pl-[16px] pr-[16px] flex flex-col items-center gap-[32px]"
+        className="absolute md:w-[800px] top-0 left-0 md:left-[50%] md:translate-x-[-50%] w-[100%] h-[30%] bg-[#02274F] pl-[16px] pr-[16px] flex flex-col items-center gap-[32px]"
         style={{ height: maskHeight }}
       >
         <Image

@@ -119,3 +119,8 @@ input:focus {
     transform: translateX(0%);
   }
 }
+
+/* margin 居中 */
+.m-center {
+  margin: 0 auto;
+}

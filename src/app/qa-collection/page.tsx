@@ -34,7 +34,7 @@ export default function QACollection() {
   const [currentStep, setCurrentStep] = useState(1);
   const [answer, setAnswer] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [isHover, setIsHover] = useState(false);
+  const [isHover, setIsHover] = useState(-1);
   useEffect(() => {
     const handleScroll = () => {
       setIsHeaderVisible(window.scrollY > 60);
@@ -43,8 +43,8 @@ export default function QACollection() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
   return (
-    <div className="md:flex flex-col items-center md:bg-[url('/desktop_bg.png')] bg-cover bg-center">
-      <div className="w-[100%] md:w-[800px] bg-[#002859] pt-[16px] flex flex-col items-center justify-center">
+    <div className="md:flex md:min-h-[100vh] flex-col items-center md:bg-[url('/desktop_bg.png')] bg-cover bg-center">
+      <div className="w-[100%] md:w-[800px] md:min-h-[100vh] bg-[#002859] pt-[16px] flex flex-col items-center justify-center">
         <div className="w-[343px] md:w-[768px] bg-[url('/collection_bg.png')] bg-scroll-y-desktop">
           <header
             className={`
@@ -96,14 +96,15 @@ export default function QACollection() {
                     setAnswer(newAnswer);
                   }}
                   style={{
-                    ...(answer[currentStep - 1] !== String.fromCharCode(65 + index) && !isHover
+                    ...(answer[currentStep - 1] !== String.fromCharCode(65 + index) &&
+                    isHover !== index
                       ? { backgroundImage: `url(${option.background})` }
                       : { backgroundImage: 'url("/a_select_bg.png")', color: '#fff' }),
                     backgroundSize: 'cover',
                     animationDelay: `${index * 0.8}s`,
                   }}
-                  onMouseEnter={() => setIsHover(true)}
-                  onMouseLeave={() => setIsHover(false)}
+                  onMouseEnter={() => setIsHover(index)}
+                  onMouseLeave={() => setIsHover(-1)}
                   key={index}
                   className="animate__animated animate__fadeInDown transition-all duration-300 w-[311px] h-[120px] p-[16px] text-[16px] font-bold text-center flex flex-col items-center justify-center"
                 >
