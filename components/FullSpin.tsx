@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Spin } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons';
 interface FullSpinProps {
@@ -12,17 +12,17 @@ const InternalFullSpin = React.forwardRef<HTMLDivElement, FullSpinProps>(
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     _ref,
   ) => {
-    useEffect(() => {
-      if (open) {
-        document.body.style.overflow = 'hidden';
-      } else {
-        document.body.style.overflow = '';
-      }
-      // 组件卸载时恢复
-      return () => {
-        document.body.style.overflow = '';
-      };
-    }, [open]);
+    // useEffect(() => {
+    //   if (open) {
+    //     document.body.style.overflow = 'hidden';
+    //   } else {
+    //     document.body.style.overflow = '';
+    //   }
+    //   // 组件卸载时恢复
+    //   return () => {
+    //     document.body.style.overflow = '';
+    //   };
+    // }, [open]);
 
     return (
       <>

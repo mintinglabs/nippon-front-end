@@ -6,9 +6,11 @@ import { useEffect, useState } from 'react';
 import { AvatarUpload } from '../../components/AvatarUpload';
 import FullSpin from '../../components/FullSpin';
 import Alert from '../../components/Alert';
-import { Modal } from 'antd';
+import { Modal, Spin } from 'antd';
 import { useRouter } from 'next/navigation';
 import { isMobile } from 'react-device-detect';
+import { getGenerateCount } from '../../apis/business';
+import { LoadingOutlined } from '@ant-design/icons';
 
 type FormConf = {
   id: 1 | 2 | 3;
@@ -25,10 +27,10 @@ export default function Home() {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    photo:
-      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTzKFUxVbiBKUcF5mXDGaRFYbhI7pFq9DWV_w&s',
+    image: '',
   });
   const [emailError, setEmailError] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
   const idLabFormConf: FormConf[] = [
     {
       id: 1,
@@ -78,17 +80,23 @@ export default function Home() {
           <div className="w-[311px] text-center text-[14px] font-[400] text-[#FFFFFF] mt-[8px]">
             （相片規格僅限1人，正面及半身，五官需清晰可見，嚴禁色情與暴力。）
           </div>
-          {formData.photo ? (
+          {formData.image ? (
             <div className="w-[116px] h-[116px] mt-[16px] relative flex items-center justify-center rounded-[8px] p-[8px] border border-[#A1A1A1]">
               <Image
-                src={formData.photo}
+                src={formData.image}
                 alt="photo"
                 width={100}
                 height={100}
                 style={{ objectFit: 'cover', width: '100px', height: '100px' }}
               />
               <Image
-                className="absolute top-[-12px] right-[-12px]"
+                onClick={() => {
+                  setFormData({
+                    ...formData,
+                    image: '',
+                  });
+                }}
+                className="absolute top-[-12px] right-[-12px] cursor-pointer"
                 src="/Close.svg"
                 alt="delete"
                 width={24}
@@ -96,25 +104,35 @@ export default function Home() {
               />
             </div>
           ) : (
-            <AvatarUpload>
-              <button className="w-[311px] h-[44px] flex items-center justify-center rounded-[25px] bg-[#FF7CFF] text-[15px] font-[700] text-[#FFFFFF] mt-[8px]">
+            <AvatarUpload
+              onUploadSuccess={(url: string) => {
+                setFormData({
+                  ...formData,
+                  image: url,
+                });
+              }}
+              setIsUploading={setIsUploading}
+            >
+              <button className="w-[311px] h-[44px] flex items-center cursor-pointer justify-center rounded-[25px] bg-[#FF7CFF] text-[15px] font-[700] text-[#FFFFFF] mt-[8px]">
                 <Image className="mr-[8px]" src="/upload.svg" alt="upload" width={18} height={18} />
                 按此上傳相片
               </button>
             </AvatarUpload>
           )}
 
-          <FullSpin open={false} text="上傳中..." />
+          <FullSpin open={isUploading} text="上傳中..." />
         </>
       ),
     },
   ];
   const [isAgreeChecked, setIsAgreeChecked] = useState(false);
+  const [isGenerateCountExceeded, setIsGenerateCountExceeded] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const [isNextButtonDisabled, setIsNextButtonDisabled] = useState(false);
   useEffect(() => {
     setIsNextButtonDisabled(
-      formData.name !== '' && formData.email !== '' && isAgreeChecked && formData.photo !== '',
+      formData.name !== '' && formData.email !== '' && isAgreeChecked && formData.image !== '',
     );
   }, [formData, isAgreeChecked]);
 
@@ -128,6 +146,47 @@ export default function Home() {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  // 提交表单
+  const handleSubmit = async () => {
+    if (isLoading) {
+      return;
+    }
+
+    if (isNextButtonDisabled) {
+      // 校验邮箱
+      if (!EMAIL_REGEX.test(formData.email)) {
+        setEmailError(true);
+        return;
+      }
+      setEmailError(false);
+      // router.push('/qa-collection');
+
+      // 下一步前校验是否生成次数已用完
+      try {
+        setIsLoading(true);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const res: any = await getGenerateCount({ email: formData.email });
+        if (res?.code !== 200) {
+          console.error(res.message);
+          return;
+        }
+        if (res.data.generateNumber > 20) {
+          setIsGenerateCountExceeded(true);
+          return;
+        }
+        // email前后空格处理
+        const email = formData.email.trim();
+        // 表单数据存储到localstorage
+        localStorage.setItem('formData', JSON.stringify({ ...formData, email }));
+        router.push('/qa-collection');
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+  };
 
   return (
     <>
@@ -148,7 +207,7 @@ export default function Home() {
             className="absolute bottom-[-14px] mx-auto"
             src="/bg-top-font.gif"
             alt="logo"
-            width={343}
+            width={34}
             height={103}
             style={{
               objectFit: 'cover',
@@ -158,8 +217,21 @@ export default function Home() {
           />
         </div>
         <div className="flex flex-col items-center justify-center md:bg-[#0C274C]">
-          <Image src="/banner.png" alt="logo" width={hasMobile ? 375 : 800} height={288} />
-          <Image className="mt-[-2px]" src="/id-lab-title.png" alt="logo" width={343} height={60} />
+          <Image
+            src="/banner.png"
+            alt="logo"
+            width={1499}
+            height={1152}
+            style={{ width: hasMobile ? '375px' : '800px', height: '100%' }}
+          />
+          <Image
+            className="mt-[-2px]"
+            src="/id-lab-title.png"
+            alt="logo"
+            width={1373}
+            height={240}
+            style={{ width: hasMobile ? '343px' : '733px', height: 'auto' }}
+          />
         </div>
         <div className="md:w-[800px] md:bg-[#0C274C]">
           <div className="mb-[24px]">
@@ -187,27 +259,17 @@ export default function Home() {
           </div>
           <div className="flex justify-center">
             <button
-              onClick={() => {
-                if (isNextButtonDisabled) {
-                  // 校验邮箱
-                  if (!EMAIL_REGEX.test(formData.email)) {
-                    setEmailError(true);
-                    return;
-                  }
-                  setEmailError(false);
-                  router.push('/qa-collection');
-                }
-              }}
-              className={`w-[311px] h-[44px] flex items-center justify-center rounded-[25px] text-[15px] font-[700] text-[#FFFFFF] mt-[32px] mb-[24px] transition-all duration-300
-          ${isNextButtonDisabled ? 'bg-[#E30211]' : 'bg-[#CACACA]'}
-          `}
+              onClick={handleSubmit}
+              className={`w-[311px] h-[44px] flex gap-[8px] items-center cursor-pointer justify-center rounded-[25px] text-[15px] font-[700] text-[#FFFFFF] mt-[32px] mb-[24px] transition-all duration-300
+                        ${!isLoading && isNextButtonDisabled ? 'bg-[#E30211]' : 'bg-[#CACACA]'}`}
             >
+              {isLoading && <Spin indicator={<LoadingOutlined style={{ color: '#fff' }} spin />} />}
               下一步
             </button>
 
             <Modal
               title="感謝支持"
-              open={false}
+              open={isGenerateCountExceeded}
               onOk={() => {}}
               closable={false}
               footer={null}
@@ -223,8 +285,10 @@ export default function Home() {
             >
               您已達生成上限。
               <button
-                onClick={() => {}}
-                className={`w-[263px] h-[44px] flex items-center justify-center rounded-[25px] text-[15px] font-[700] bg-[#FF7CFF] text-[#FFFFFF] mt-[32px] transition-all duration-300
+                onClick={() => {
+                  setIsGenerateCountExceeded(false);
+                }}
+                className={`w-[263px] h-[44px] cursor-pointer flex items-center justify-center rounded-[25px] text-[15px] font-[700] bg-[#FF7CFF] text-[#FFFFFF] mt-[32px] transition-all duration-300
           `}
               >
                 明白

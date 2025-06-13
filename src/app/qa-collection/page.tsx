@@ -6,6 +6,7 @@ import 'animate.css';
 import { Spin } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons';
 import { useRouter } from 'next/navigation';
+import { submitForm } from '../../../apis/business';
 
 const StepProgress = ({ currentStep = 1, totalStep = 4 }) => {
   const percent = (currentStep / totalStep) * 100;
@@ -36,12 +37,58 @@ export default function QACollection() {
   const [isLoading, setIsLoading] = useState(false);
   const [isHover, setIsHover] = useState(-1);
   useEffect(() => {
+    // 如果不存在formData，则跳转到首页
+    if (!localStorage.getItem('formData')) {
+      router.push('/');
+    }
+
     const handleScroll = () => {
       setIsHeaderVisible(window.scrollY > 60);
     };
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [router]);
+
+  const handleNext = async () => {
+    if (isLoading) {
+      return;
+    }
+
+    if (currentStep < QNA.length && answer[currentStep - 1]) {
+      setCurrentStep(currentStep + 1);
+    }
+    if (currentStep === QNA.length) {
+      setIsLoading(true);
+      try {
+        const formData = JSON.parse(localStorage.getItem('formData') || '{}');
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const res: any = await submitForm({
+          ...formData,
+          answers: answer,
+        });
+        if (res?.code !== 200) {
+          console.error(res.message);
+          return;
+        }
+        // 存储uuid
+        localStorage.setItem('uuid', res.data.uuid);
+        router.push('/qa-collection/loading');
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+  };
+
+  const handleBack = () => {
+    if (currentStep > 1) {
+      setCurrentStep(currentStep - 1);
+    } else {
+      router.back();
+    }
+  };
+
   return (
     <div className="md:flex md:min-h-[100vh] flex-col items-center md:bg-[url('/desktop_bg.png')] bg-cover bg-center">
       <div className="w-[100%] md:w-[800px] md:min-h-[100vh] bg-[#002859] pt-[16px] flex flex-col items-center justify-center">
@@ -55,12 +102,8 @@ export default function QACollection() {
           >
             <div className="w-[343px] relative h-[48px] flex gap-[20px] items-center justify-center">
               <div
-                onClick={() => {
-                  if (currentStep > 1) {
-                    setCurrentStep(currentStep - 1);
-                  }
-                }}
-                className="absolute left-0 w-[24px] h-[24px] flex items-center justify-center bg-[#FFFFFF] rounded-full"
+                onClick={handleBack}
+                className="absolute cursor-pointer left-0 w-[24px] h-[24px] flex items-center justify-center bg-[#FFFFFF] rounded-full"
               >
                 <Image src="/back.svg" alt="back" width={10} height={18} />
               </div>
@@ -72,12 +115,8 @@ export default function QACollection() {
           </div>
           <div className="relative h-[48px] flex gap-[20px] mt-[24px] items-center justify-center">
             <div
-              onClick={() => {
-                if (currentStep > 1) {
-                  setCurrentStep(currentStep - 1);
-                }
-              }}
-              className="absolute left-0 w-[24px] h-[24px] flex items-center justify-center bg-[#FFFFFF] rounded-full"
+              onClick={handleBack}
+              className="absolute cursor-pointer left-0 w-[24px] h-[24px] flex items-center justify-center bg-[#FFFFFF] rounded-full"
             >
               <Image src="/back.svg" alt="back" width={10} height={18} />
             </div>
@@ -118,19 +157,8 @@ export default function QACollection() {
           </div>
           <div className="flex items-center justify-center">
             <button
-              onClick={() => {
-                if (currentStep < QNA.length && answer[currentStep - 1] && !isLoading) {
-                  setCurrentStep(currentStep + 1);
-                }
-                if (currentStep === QNA.length) {
-                  setIsLoading(true);
-                  setTimeout(() => {
-                    setIsLoading(false);
-                    router.push('/qa-collection/loading');
-                  }, 1000);
-                }
-              }}
-              className={`w-[311px] h-[44px] flex items-center justify-center gap-[8px] rounded-[25px] text-[15px] font-[700] text-[#FFFFFF] mt-[32px] mb-[24px] transition-all duration-300
+              onClick={handleNext}
+              className={`w-[311px] h-[44px] cursor-pointer flex items-center justify-center gap-[8px] rounded-[25px] text-[15px] font-[700] text-[#FFFFFF] mt-[32px] mb-[24px] transition-all duration-300
           ${answer[currentStep - 1] && !isLoading ? 'bg-[#E30211]' : 'bg-[#CACACA]'}
           `}
             >

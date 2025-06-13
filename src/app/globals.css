@@ -92,6 +92,10 @@ input:focus {
   border: 2px solid #fff;
   border-radius: 100px;
   overflow: hidden;
+
+  @media (min-width: 768px) {
+    height: 32px;
+  }
 }
 
 .loader::after {
@@ -106,6 +110,11 @@ input:focus {
   left: 0;
   box-sizing: border-box;
   animation: animloader 3s linear infinite;
+
+  @media (min-width: 768px) {
+    width: 120px;
+    height: 24px;
+  }
 }
 
 @keyframes animloader {
@@ -123,4 +132,16 @@ input:focus {
 /* margin 居中 */
 .m-center {
   margin: 0 auto;
+}
+
+.border-gradient {
+  border: 2px solid;
+  border-image-source: linear-gradient(90deg, #D8F2FF -0.26%, #00FFFF 19.84%, #09F9FE 20.85%, #23ECFD 21.85%, #4DD6FB 23.86%, #88B7F9 25.87%, #D190F6 27.88%, #FA7BF5 28.89%, #F685F5 29.89%, #EBA6F8 34.92%, #E2C1FA 40.95%, #DAD5FC 46.98%, #D5E4FE 54.02%, #D2EDFE 62.06%, #D2F0FF 75.13%, #008DFF 90.21%, #55B9FF 94.23%, #D8F2FF 100.26%);
+  border-image-slice: 1;
+}
+
+.border-gradient-desktop {
+  border: 4px solid;
+  border-image-source: linear-gradient(90deg, #D8F2FF -0.26%, #00FFFF 19.84%, #09F9FE 20.85%, #23ECFD 21.85%, #4DD6FB 23.86%, #88B7F9 25.87%, #D190F6 27.88%, #FA7BF5 28.89%, #F685F5 29.89%, #EBA6F8 34.92%, #E2C1FA 40.95%, #DAD5FC 46.98%, #D5E4FE 54.02%, #D2EDFE 62.06%, #D2F0FF 75.13%, #008DFF 90.21%, #55B9FF 94.23%, #D8F2FF 100.26%);
+  border-image-slice: 1;
 }

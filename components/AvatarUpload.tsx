@@ -3,8 +3,13 @@ import { useRef, useState } from 'react';
 import { isIOS, isMobile } from 'react-device-detect';
 import { CameraOutlined, FolderOpenOutlined } from '@ant-design/icons';
 import Alert from './Alert';
+import { uploadPortrait } from '../apis/business';
 
-export const AvatarUpload: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const AvatarUpload: React.FC<{
+  children: React.ReactNode;
+  onUploadSuccess: (url: string) => void;
+  setIsUploading: (isUploading: boolean) => void;
+}> = ({ children, onUploadSuccess, setIsUploading }) => {
   const [openFilePicker, setOpenFilePicker] = useState(false);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -13,11 +18,35 @@ export const AvatarUpload: React.FC<{ children: React.ReactNode }> = ({ children
   const albumInputRef = useRef<HTMLInputElement>(null);
 
   const handleCameraInputChange = async (file: File) => {
+    // 判断格式，只能是jpeg, png, heic, webp
+    if (!['image/jpeg', 'image/png', 'image/heic', 'image/webp'].includes(file.type)) {
+      Alert.show('請檢查相片格式');
+      return Upload.LIST_IGNORE;
+    }
+
     if (file.size > 5 * 1024 * 1024) {
       // 这里可以用 antd 的 message.error 或 alert
       console.log('file.size', file.size);
       Alert.show('請上傳 5MB 以下的 JPEG, PNG, HEIC 或 WebP 圖檔');
       return Upload.LIST_IGNORE; // 阻止上传
+    }
+
+    try {
+      setIsUploading(true);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const res: any = await uploadPortrait({
+        file,
+        pageId: '1064650320242859',
+      });
+      if (res.code !== 200) {
+        Alert.show(res.message);
+        return;
+      }
+      onUploadSuccess(res.data.url);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsUploading(false);
     }
 
     // const res: any = await generateStorageSignURL({});
