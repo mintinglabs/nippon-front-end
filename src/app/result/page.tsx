@@ -8,13 +8,17 @@ import ConnectIcon from '../../../components/ConnectIcon';
 import { isMobile } from 'react-device-detect';
 import { toPng } from 'html-to-image';
 import { getGenerateInfo } from '../../../apis/business';
-import { themeList } from './reducer';
+import { adImgList, themeList } from './reducer';
 import FullSpin from '../../../components/FullSpin';
 
 export default function Result() {
   const router = useRouter();
   const [isCopied, setIsCopied] = useState(false);
   const [hasMobile, setHasMobile] = useState(false);
+
+  const [shareImg, setShareImg] = useState<string>('');
+
+  const [isLoading, setIsLoading] = useState(false);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [result, setResult] = useState<any>(null);
@@ -25,14 +29,37 @@ export default function Result() {
       router.push('/');
       return;
     }
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const res: any = await getGenerateInfo({ uuid: uuid || '' });
-    if (res.data.status === 'done') {
-      setResult(res.data);
-    } else {
+    try {
+      setIsLoading(true);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const res: any = await getGenerateInfo({ uuid: uuid || '' });
+      if (res.code !== 200) {
+        Alert.show(res.message);
+        return;
+      }
+      if (res.data.status === 'done') {
+        setResult(res.data);
+      } else {
+        router.push('/');
+      }
+    } catch (error) {
+      console.log(error);
+      Alert.show('生成失败');
       router.push('/');
+    } finally {
+      setIsLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (result) {
+      const node = document.getElementById('result-container');
+      toPng(node as HTMLElement).then(async (dataUrl) => {
+        setShareImg(dataUrl);
+      });
+    }
+  }, [result]);
+
   useEffect(() => {
     setHasMobile(isMobile);
     getResult();
@@ -41,55 +68,65 @@ export default function Result() {
   return (
     <div className="bg-[url('/desktop_bg.png')] bg-cover bg-center flex flex-col items-center">
       <div className="w-[100%] md:w-[600px] bg-[#fff] flex flex-col items-center">
-        <Image
-          src="/result_top_bg.png"
-          alt="result"
-          width={2400}
-          height={598}
-          style={{ width: '100%', height: 'auto' }}
-        />
-        <div id="result-container">
+        <div id="result-container" className="w-[100%] flex flex-col items-center">
+          <Image
+            src="/result_top_bg.png"
+            alt="result"
+            width={2400}
+            height={598}
+            style={{ width: '100%', height: 'auto' }}
+          />
           <div className="w-[343px] md:w-[530px] h-[228px] md:h-[351px] flex items-center justify-center gap-[8px] mt-[16px]">
-            <Image
-              src={result ? result.aiImages[1] || '/default-ai.png' : '/default-ai.png'}
-              alt="result"
-              width={351}
-              height={351}
-              style={{
-                width: !hasMobile ? 351 : 228,
-                height: !hasMobile ? 351 : 228,
-                objectFit: 'cover',
-              }}
-            />
+            {result && (
+              <Image
+                src={
+                  result && result.aiImages
+                    ? result.aiImages[1] || '/default-ai.png'
+                    : '/default-ai.png'
+                }
+                alt="result"
+                width={351}
+                height={351}
+                style={{
+                  width: hasMobile ? 228 : 351,
+                  height: hasMobile ? 228 : 351,
+                  objectFit: 'cover',
+                }}
+              />
+            )}
             <div className="w-[100%] h-[100%] flex flex-col gap-[8px]">
-              <Image
-                src={
-                  themeList[result?.reportStyle?.style?.colorKey as keyof typeof themeList]
-                    ?.image[0] || '/default-ai.png'
-                }
-                alt="result"
-                width={171}
-                height={171}
-                style={{
-                  width: !hasMobile ? 171 : 110,
-                  height: !hasMobile ? 171 : 110,
-                  objectFit: 'cover',
-                }}
-              />
-              <Image
-                src={
-                  themeList[result?.reportStyle?.style?.colorKey as keyof typeof themeList]
-                    ?.image[1] || '/default-ai.png'
-                }
-                alt="result"
-                width={171}
-                height={171}
-                style={{
-                  width: !hasMobile ? 171 : 110,
-                  height: !hasMobile ? 171 : 110,
-                  objectFit: 'cover',
-                }}
-              />
+              {result && (
+                <>
+                  <Image
+                    src={
+                      themeList[result?.reportStyle?.style?.colorKey as keyof typeof themeList]
+                        ?.image[0] || '/default-ai.png'
+                    }
+                    alt="result"
+                    width={171}
+                    height={171}
+                    style={{
+                      width: !hasMobile ? 171 : 110,
+                      height: !hasMobile ? 171 : 110,
+                      objectFit: 'cover',
+                    }}
+                  />
+                  <Image
+                    src={
+                      themeList[result?.reportStyle?.style?.colorKey as keyof typeof themeList]
+                        ?.image[1] || '/default-ai.png'
+                    }
+                    alt="result"
+                    width={171}
+                    height={171}
+                    style={{
+                      width: !hasMobile ? 171 : 110,
+                      height: !hasMobile ? 171 : 110,
+                      objectFit: 'cover',
+                    }}
+                  />
+                </>
+              )}
             </div>
           </div>
           <div className="w-[343px] md:w-[530px] text-center text-[28px] font-[900] mt-[16px] text-[#143784]">
@@ -187,29 +224,40 @@ export default function Result() {
         <div>
           {hasMobile ? (
             <button
-              onClick={() => {
-                navigator.share({
-                  title: '立邦油漆',
-                  text: '立邦油漆',
-                  url: window.location.href,
-                });
+              onClick={async () => {
+                if (!shareImg) {
+                  Alert.show('分享失败, 请刷新重试。');
+                  return;
+                }
+
+                const blob = await (await fetch(shareImg)).blob();
+                const file = new File([blob], 'color-result.png', { type: 'image/png' });
+                navigator
+                  .share({
+                    title: 'Nippon',
+                    text: 'Nippon',
+                    files: [file],
+                    url: window.location.href,
+                  })
+                  .catch(() => {
+                    Alert.show('分享失败');
+                  });
               }}
-              className="w-[311px] h-[44px] flex items-center justify-center rounded-[25px] text-[15px] font-[700] text-[#FFFFFF] mt-[32px] mb-[24px] transition-all duration-300
+              className="w-[311px] h-[44px] flex items-center justify-center rounded-[25px] text-[15px] font-[700] text-[#FFFFFF] mt-[32px] mb-[16px] transition-all duration-300
           bg-[#E30211]"
             >
               分享結果
             </button>
           ) : (
             <button
-              onClick={() => {
-                const node = document.getElementById('result-container');
-                toPng(node as HTMLElement).then(async (dataUrl) => {
-                  const blob = await (await fetch(dataUrl)).blob();
-
-                  await navigator.clipboard.write([new ClipboardItem({ [blob.type]: blob })]);
-
-                  console.log('success');
-                });
+              onClick={async () => {
+                if (!shareImg) {
+                  Alert.show('分享失败, 请刷新重试。');
+                  return;
+                }
+                const blob = await (await fetch(shareImg)).blob();
+                await navigator.clipboard.write([new ClipboardItem({ [blob.type]: blob })]);
+                Alert.show('图片已复制到剪贴板');
               }}
               className={`w-[311px] h-[48px] mt-[24px] mb-[16px] cursor-pointer flex items-center justify-center gap-[8px] rounded-[25px] text-[16px] font-[700] text-[#FF7CFF] transition-all duration-300
           `}
@@ -221,7 +269,7 @@ export default function Result() {
           <button
             onClick={() => {
               navigator.clipboard
-                .writeText(window.location.href)
+                .writeText(`${window.location.protocol}//${window.location.host}`)
                 .then(() => {
                   setIsCopied(true);
                   setTimeout(() => {
@@ -253,7 +301,10 @@ export default function Result() {
         </div>
         <div className="w-[100%] flex flex-col bg-[#02274F]">
           <Image
-            src="/result_ads1.png"
+            src={
+              adImgList[result?.reportStyle?.style?.code as keyof typeof adImgList] ||
+              '/result_ads1.png'
+            }
             alt="result"
             width={1500}
             height={703}
@@ -339,7 +390,8 @@ export default function Result() {
         </div>
       </div>
 
-      <FullSpin open={!result} text="加載中..." />
+      <FullSpin open={isLoading} text="加載中..." />
+      <Alert.Container />
     </div>
   );
 }

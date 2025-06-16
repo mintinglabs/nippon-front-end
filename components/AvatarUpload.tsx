@@ -45,6 +45,7 @@ export const AvatarUpload: React.FC<{
       onUploadSuccess(res.data.url);
     } catch (error) {
       console.error(error);
+      Alert.show('上傳失敗，請重試');
     } finally {
       setIsUploading(false);
     }

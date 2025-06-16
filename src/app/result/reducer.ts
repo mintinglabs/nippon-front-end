@@ -31,6 +31,8 @@ export const themeList = {
   },
 };
 
-// const adImgList = {
-
-// }
+export const adImgList = {
+  xwz: '/ads_1_1.png',
+  ylz: '/ads_1_2.png',
+  xyp: '/ads_1_3.png',
+};

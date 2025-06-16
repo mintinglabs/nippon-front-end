@@ -7,6 +7,7 @@ import { Spin } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons';
 import { useRouter } from 'next/navigation';
 import { submitForm } from '../../../apis/business';
+import Alert from '../../../components/Alert';
 
 const StepProgress = ({ currentStep = 1, totalStep = 4 }) => {
   const percent = (currentStep / totalStep) * 100;
@@ -68,6 +69,7 @@ export default function QACollection() {
         });
         if (res?.code !== 200) {
           console.error(res.message);
+          Alert.show(res.message);
           return;
         }
         // 存储uuid
@@ -169,6 +171,7 @@ export default function QACollection() {
         </div>
         <div className="w-[100%] md:w-[800px] h-[68px] md:h-[145px] bg-[url('/nippon-ad.png')]  bg-cover bg-center" />
       </div>
+      <Alert.Container />
     </div>
   );
 }

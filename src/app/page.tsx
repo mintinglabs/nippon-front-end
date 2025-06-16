@@ -83,6 +83,12 @@ export default function Home() {
           {formData.image ? (
             <div className="w-[116px] h-[116px] mt-[16px] relative flex items-center justify-center rounded-[8px] p-[8px] border border-[#A1A1A1]">
               <Image
+                onClick={() => {
+                  setFormData({
+                    ...formData,
+                    image: '',
+                  });
+                }}
                 src={formData.image}
                 alt="photo"
                 width={100}
@@ -169,6 +175,7 @@ export default function Home() {
         const res: any = await getGenerateCount({ email: formData.email });
         if (res?.code !== 200) {
           console.error(res.message);
+          Alert.show(res.message);
           return;
         }
         if (res.data.generateNumber > 20) {

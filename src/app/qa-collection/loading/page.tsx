@@ -3,12 +3,13 @@ import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
 import { getGenerateInfo } from '../../../../apis/business';
 import { useRouter } from 'next/navigation';
+import { Modal } from 'antd';
 
 export default function Loading() {
   const imgRef = useRef<HTMLImageElement>(null);
   const [maskHeight, setMaskHeight] = useState('auto');
   const router = useRouter();
-
+  const [isError, setIsError] = useState(false);
   useEffect(() => {
     if (imgRef.current) {
       setMaskHeight(imgRef.current.height / 2.25 + 'px');
@@ -26,6 +27,10 @@ export default function Loading() {
       if (uuid) {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const res: any = await getGenerateInfo({ uuid });
+        if (res.code !== 200) {
+          setIsError(true);
+          return;
+        }
         if (res.data.status === 'done') {
           localStorage.removeItem('formData');
           if (timer.current) {
@@ -69,6 +74,34 @@ export default function Loading() {
         />
       </div>
       <div className="w-[100%] hidden md:block z-[-1] absolute bottom-0 left-0 right-0 bg-[#003888]"></div>
+      <Modal
+        title="抱歉😣生成遇到問題"
+        open={isError}
+        onOk={() => {}}
+        closable={false}
+        footer={null}
+        centered
+        styles={{
+          content: {
+            width: '311px',
+            margin: '0 auto',
+            fontFamily: 'Noto Sans TC',
+            textAlign: 'center',
+          },
+        }}
+      >
+        生成圖像時出現錯誤, 請重試。
+        <button
+          onClick={() => {
+            setIsError(false);
+            router.push('/');
+          }}
+          className={`w-[263px] h-[44px] cursor-pointer flex items-center justify-center rounded-[25px] text-[15px] font-[700] bg-[#FF7CFF] text-[#FFFFFF] mt-[32px] transition-all duration-300
+          `}
+        >
+          重試
+        </button>
+      </Modal>
     </div>
   );
 }
