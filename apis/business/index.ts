@@ -1,4 +1,5 @@
 import { request } from '../lib/base';
+import { generateRequestId } from '../../utils/generator';
 
 interface UploadPortraitRequest {
   file: File;
@@ -19,6 +20,7 @@ export const uploadPortrait = (data: UploadPortraitRequest) => {
   const formData: any = new FormData();
   formData.append('file', data.file);
   formData.append('pageId', data.pageId);
+  formData.append('requestId', generateRequestId());
 
   return request.post('/articleWebAPI/nippon/v1/upload', formData, {
     headers: {
@@ -29,17 +31,24 @@ export const uploadPortrait = (data: UploadPortraitRequest) => {
 
 // 获取生成次数
 export const getGenerateCount = (data: { email: string }) => {
-  return request.post('/articleWebAPI/nippon/v1/describeGenerateNumber', data);
+  return request.post('/articleWebAPI/nippon/v1/describeGenerateNumber', {
+    ...data,
+    requestId: generateRequestId(),
+  });
 };
 
 // 提交表单
 export const submitForm = (data: SubmitFormRequest) => {
   return request.post('/articleWebAPI/nippon/v1/apply', {
     ...data,
+    requestId: generateRequestId(),
   });
 };
 
 // 获取生成信息
 export const getGenerateInfo = (data: { uuid: string }) => {
-  return request.post('/articleWebAPI/nippon/v1/describeApply', data);
+  return request.post('/articleWebAPI/nippon/v1/describeApply', {
+    ...data,
+    requestId: generateRequestId(),
+  });
 };

@@ -31,7 +31,7 @@ export default function Loading() {
           setIsError(true);
           return;
         }
-        if (res.data.status === 'done') {
+        if (res.data.status === 'ai_image_done' || res.data.status === 'done') {
           localStorage.removeItem('formData');
           if (timer.current) {
             clearInterval(timer.current);

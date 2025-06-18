@@ -8,7 +8,7 @@ type RequestData = Record<string, unknown> | unknown[] | null;
 // 创建axios实例
 const createAxiosInstance = (config?: AxiosRequestConfig): AxiosInstance => {
   const instance = axios.create({
-    baseURL: '/api',
+    baseURL: process.env.NEXT_PUBLIC_API_BASE_URL || '/',
     timeout: 60 * 1000,
     headers: {
       'Content-Type': 'application/json',
