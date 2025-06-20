@@ -142,7 +142,7 @@ export default function QACollection() {
                       ? { backgroundImage: `url(${option.background})` }
                       : { backgroundImage: 'url("/a_select_bg.png")', color: '#fff' }),
                     backgroundSize: 'cover',
-                    animationDelay: `${index * 0.8}s`,
+                    animationDelay: `${index * 0.2}s`,
                   }}
                   onMouseEnter={() => setIsHover(index)}
                   onMouseLeave={() => setIsHover(-1)}

@@ -15,6 +15,10 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: 'Nippon Color ID',
   description: 'Nippon Color ID',
+  // 添加 og image
+  openGraph: {
+    images: ['/og-image.png'],
+  },
 };
 
 export default function RootLayout({

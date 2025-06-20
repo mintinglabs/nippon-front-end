@@ -207,24 +207,24 @@ export default function Home() {
         >
           <Image src="/nippon_logo_dark.png" alt="logo" width={114} height={32} />
         </header>
-        <div className="relative flex h-[169px] md:w-[800px] md:h-[380px] items-start justify-center bg-[url('/bg-top.png')] bg-cover bg-center pt-[24px]">
-          <Image src="/nippon_logo.png" alt="logo" width={hasMobile ? 114 : 210} height={32} />
 
+        <div className="flex flex-col relative items-center justify-center md:bg-[#0C274C]">
           <Image
-            className="absolute bottom-[-14px] mx-auto"
-            src="/bg-top-font.gif"
+            src="/home_bg_low.gif"
             alt="logo"
-            width={34}
-            height={103}
-            style={{
-              objectFit: 'cover',
-              width: hasMobile ? '343px' : '800px',
-              height: hasMobile ? '103px' : '227px',
-            }}
+            width={1499}
+            height={1152}
+            style={{ width: hasMobile ? '375px' : '800px', height: '100%' }}
           />
-        </div>
-        <div className="flex flex-col items-center justify-center md:bg-[#0C274C]">
           <Image
+            src="/home_bg_low.png"
+            alt="logo"
+            width={1499}
+            height={1152}
+            className="absolute top-0 left-0 right-0 bottom-0"
+            style={{ width: hasMobile ? '375px' : '800px', height: '100%' }}
+          />
+          {/* <Image
             src="/banner.png"
             alt="logo"
             width={1499}
@@ -238,7 +238,7 @@ export default function Home() {
             width={1373}
             height={240}
             style={{ width: hasMobile ? '343px' : '733px', height: 'auto' }}
-          />
+          /> */}
         </div>
         <div className="md:w-[800px] md:bg-[#0C274C]">
           <div className="mb-[24px]">
