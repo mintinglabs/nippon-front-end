@@ -19,7 +19,6 @@ type FormConf = {
   description?: string;
 };
 
-const ENGLISH_ONLY_REGEX = /^[a-zA-Z]+$/;
 const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
 export default function Home() {
@@ -27,21 +26,49 @@ export default function Home() {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
+    phone: '',
     image: '',
   });
   const [emailError, setEmailError] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
+  const [isComposing, setIsComposing] = useState(false);
   const idLabFormConf: FormConf[] = [
     {
       id: 1,
       title: '你的姓名',
       formItem: (
         <input
+          type="text"
           value={formData.name}
           onChange={(e) => {
-            if (e.target.value === '' || ENGLISH_ONLY_REGEX.test(e.target.value)) {
-              setFormData({ ...formData, name: e.target.value });
+            const value = e.target.value;
+            // 如果正在手写输入，允许所有输入
+            if (isComposing) {
+              setFormData({ ...formData, name: value });
+              return;
             }
+
+            // 允许空值
+            if (value === '') {
+              setFormData({ ...formData, name: value });
+              return;
+            }
+
+            // 只保留英文字母，过滤掉其他字符
+            const filteredValue = value.replace(/[^A-Za-z]/g, '');
+            setFormData({ ...formData, name: filteredValue });
+          }}
+          onCompositionStart={() => {
+            setIsComposing(true);
+          }}
+          onCompositionEnd={(e) => {
+            setIsComposing(false);
+            // 手写输入结束时进行最终验证
+            // 清除字符中所有的空格
+            const value = (e.target as HTMLInputElement).value.replace(/\s/g, '');
+            // 只保留英文字母，过滤掉其他字符
+            const filteredValue = value.replace(/[^A-Za-z]/g, '');
+            setFormData({ ...formData, name: filteredValue });
           }}
           className="w-[311px] h-[40px] rounded-[8px] text-center bg-[#FFFFFF] border text-[16px]  p-[10px] mt-[8px] mb-[24px]"
           placeholder="請輸入英文名"
@@ -54,6 +81,7 @@ export default function Home() {
       formItem: (
         <div className="mb-[24px] flex flex-col items-center justify-center">
           <input
+            type="text"
             value={formData.email}
             onChange={(e) => {
               setEmailError(false);
@@ -81,7 +109,7 @@ export default function Home() {
             （相片規格僅限1人，正面及半身，五官需清晰可見，嚴禁色情與暴力。）
           </div>
           {formData.image ? (
-            <div className="w-[116px] h-[116px] mt-[16px] relative flex items-center justify-center rounded-[8px] p-[8px] border border-[#A1A1A1]">
+            <div className="w-[116px] h-[116px] mt-[16px] relative flex items-center justify-center rounded-[8px] p-[8px] border border-[#A1A1A1] bg-[#f5f5f5]">
               <Image
                 onClick={() => {
                   setFormData({
@@ -93,7 +121,22 @@ export default function Home() {
                 alt="photo"
                 width={100}
                 height={100}
-                style={{ objectFit: 'cover', width: '100px', height: '100px' }}
+                style={{
+                  objectFit: 'cover',
+                  width: '100px',
+                  height: '100px',
+                  borderRadius: '4px',
+                }}
+                onLoad={() => {
+                  // 图片加载完成后的处理
+                }}
+                onError={() => {
+                  // 图片加载失败的处理
+                  setFormData({
+                    ...formData,
+                    image: '',
+                  });
+                }}
               />
               <Image
                 onClick={() => {
@@ -102,7 +145,7 @@ export default function Home() {
                     image: '',
                   });
                 }}
-                className="absolute top-[-12px] right-[-12px] cursor-pointer"
+                className="absolute top-[-12px] right-[-12px] cursor-pointer z-10"
                 src="/Close.svg"
                 alt="delete"
                 width={24}
@@ -110,20 +153,28 @@ export default function Home() {
               />
             </div>
           ) : (
-            <AvatarUpload
-              onUploadSuccess={(url: string) => {
-                setFormData({
-                  ...formData,
-                  image: url,
-                });
-              }}
-              setIsUploading={setIsUploading}
-            >
-              <button className="w-[311px] h-[44px] flex items-center cursor-pointer justify-center rounded-[25px] bg-[#FF7CFF] text-[15px] font-[700] text-[#FFFFFF] mt-[8px]">
-                <Image className="mr-[8px]" src="/upload.svg" alt="upload" width={18} height={18} />
-                按此上傳相片
-              </button>
-            </AvatarUpload>
+            <div className="w-[116px] h-[116px] mt-[16px] flex items-center justify-center">
+              <AvatarUpload
+                onUploadSuccess={(url: string) => {
+                  setFormData({
+                    ...formData,
+                    image: url,
+                  });
+                }}
+                setIsUploading={setIsUploading}
+              >
+                <button className="w-[311px] h-[44px] flex items-center cursor-pointer justify-center rounded-[25px] bg-[#FF7CFF] text-[15px] font-[700] text-[#FFFFFF] mt-[8px]">
+                  <Image
+                    className="mr-[8px]"
+                    src="/upload.svg"
+                    alt="upload"
+                    width={18}
+                    height={18}
+                  />
+                  按此上傳相片
+                </button>
+              </AvatarUpload>
+            </div>
           )}
 
           <FullSpin open={isUploading} text="上傳中..." />
@@ -178,7 +229,7 @@ export default function Home() {
           Alert.show(res.message);
           return;
         }
-        if (res.data.generateNumber > 20) {
+        if (res.data.generateNumber >= 20) {
           setIsGenerateCountExceeded(true);
           return;
         }
@@ -208,7 +259,12 @@ export default function Home() {
           <Image src="/nippon_logo_dark.png" alt="logo" width={114} height={32} />
         </header>
 
-        <div className="flex flex-col relative items-center justify-center md:bg-[#0C274C]">
+        <div
+          style={{
+            margin: '0 auto',
+          }}
+          className="flex w-[375px] h-[510px] md:w-[800px] md:h-[1152px] flex-col relative items-center justify-center md:bg-[#0C274C]"
+        >
           <Image
             src="/home_bg_low.gif"
             alt="logo"
@@ -221,7 +277,7 @@ export default function Home() {
             alt="logo"
             width={1499}
             height={1152}
-            className="absolute top-0 left-0 right-0 bottom-0"
+            className="absolute top-0 left-[50%] translate-x-[-50%] right-0 bottom-0"
             style={{ width: hasMobile ? '375px' : '800px', height: '100%' }}
           />
           {/* <Image

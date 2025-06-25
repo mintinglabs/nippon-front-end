@@ -102,7 +102,7 @@ export default function QACollection() {
           ${isHeaderVisible ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0'}
         `}
           >
-            <div className="w-[343px] relative h-[48px] flex gap-[20px] items-center justify-center">
+            <div className="w-[343px] md:w-[768px] relative h-[48px] flex gap-[20px] items-center justify-center">
               <div
                 onClick={handleBack}
                 className="absolute cursor-pointer left-0 w-[24px] h-[24px] flex items-center justify-center bg-[#FFFFFF] rounded-full"

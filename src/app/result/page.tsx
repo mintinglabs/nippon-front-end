@@ -23,6 +23,27 @@ export default function Result() {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [result, setResult] = useState<any>(null);
 
+  const generateImage = async () => {
+    const node = document.getElementById('result-container');
+    if (!node) return;
+
+    try {
+      const dataUrl = await toPng(node, {
+        quality: 1.0,
+        pixelRatio: 2,
+        backgroundColor: '#ffffff',
+        style: {
+          transform: 'scale(1)',
+          transformOrigin: 'top left',
+        },
+      });
+      setShareImg(dataUrl);
+    } catch (error) {
+      console.error('生成图片失败:', error);
+      Alert.show('生成图片失败');
+    }
+  };
+
   const getResult = async () => {
     const uuid = localStorage.getItem('uuid');
     if (!uuid) {
@@ -53,10 +74,45 @@ export default function Result() {
 
   useEffect(() => {
     if (result) {
-      const node = document.getElementById('result-container');
-      toPng(node as HTMLElement).then(async (dataUrl) => {
-        setShareImg(dataUrl);
-      });
+      // 等待所有图片加载完成后再生成图片
+      const waitForImagesToLoad = () => {
+        const node = document.getElementById('result-container');
+        if (!node) return;
+
+        const images = node.querySelectorAll('img');
+        if (images.length === 0) {
+          // 如果没有图片，直接生成
+          generateImage();
+          return;
+        }
+
+        let loadedCount = 0;
+        const totalImages = images.length;
+
+        const checkAllImagesLoaded = () => {
+          loadedCount++;
+          if (loadedCount === totalImages) {
+            // 所有图片都加载完成，生成分享图片
+            setTimeout(() => {
+              generateImage();
+            }, 100); // 稍微延迟一下确保渲染完成
+          }
+        };
+
+        images.forEach((img) => {
+          if (img.complete) {
+            // 图片已经加载完成
+            checkAllImagesLoaded();
+          } else {
+            // 监听图片加载事件
+            img.addEventListener('load', checkAllImagesLoaded);
+            img.addEventListener('error', checkAllImagesLoaded); // 即使加载失败也继续
+          }
+        });
+      };
+
+      // 使用 setTimeout 确保 DOM 已经渲染
+      setTimeout(waitForImagesToLoad, 100);
     }
   }, [result]);
 
@@ -68,8 +124,8 @@ export default function Result() {
   return (
     <div className="bg-[url('/desktop_bg.png')] bg-cover bg-center flex flex-col items-center">
       <div className="w-[100%] md:w-[600px] bg-[#fff] flex flex-col items-center">
-        {shareImg ? (
-          <div className="w-[100%] flex flex-col items-center bg-[#fff]">
+        {shareImg && (
+          <div className="w-[100%] flex flex-col items-center bg-[#fff] absolute top-0 left-0">
             <Image
               src={shareImg}
               alt="result"
@@ -78,163 +134,163 @@ export default function Result() {
               style={{ width: '100%', height: 'auto' }}
             />
           </div>
-        ) : (
-          <div
-            id="result-container"
-            className="w-[100%] flex flex-col items-center bg-[url('/result_share_bg.png')] bg-cover bg-center pb-[24px] md:pb-[32px]"
-          >
-            <Image
-              src="/result_top_bg.png"
-              alt="result"
-              width={2400}
-              height={598}
-              style={{ width: '100%', height: 'auto' }}
-            />
-            <div className="w-[343px] md:w-[530px] h-[228px] md:h-[351px] flex items-center justify-center gap-[8px] mt-[16px]">
+        )}
+
+        <div
+          id="result-container"
+          className="w-[100%] flex flex-col items-center bg-[url('/result_share_bg.png')] bg-cover bg-center pb-[24px] md:pb-[32px]"
+        >
+          <Image
+            src="/result_top_bg.png"
+            alt="result"
+            width={2400}
+            height={598}
+            style={{ width: '100%', height: 'auto' }}
+          />
+          <div className="w-[343px] md:w-[530px] h-[228px] md:h-[351px] flex items-center justify-center gap-[8px] mt-[16px]">
+            {result && (
+              <Image
+                src={
+                  result && result.aiImages
+                    ? result.aiImages[1] || '/default-ai.png'
+                    : '/default-ai.png'
+                }
+                alt="result"
+                width={1152}
+                height={768}
+                style={{
+                  width: hasMobile ? 228 : 351,
+                  height: hasMobile ? 228 : 351,
+                  objectFit: 'cover',
+                }}
+              />
+            )}
+            <div className="w-[100%] h-[100%] flex flex-col gap-[8px]">
               {result && (
-                <Image
-                  src={
-                    result && result.aiImages
-                      ? result.aiImages[1] || '/default-ai.png'
-                      : '/default-ai.png'
-                  }
-                  alt="result"
-                  width={1152}
-                  height={768}
-                  style={{
-                    width: hasMobile ? 228 : 351,
-                    height: hasMobile ? 228 : 351,
-                    objectFit: 'cover',
-                  }}
-                />
+                <>
+                  <Image
+                    src={
+                      themeList[result?.reportStyle?.style?.colorKey as keyof typeof themeList]
+                        ?.image[0] || '/default-ai.png'
+                    }
+                    alt="result"
+                    width={171}
+                    height={171}
+                    style={{
+                      width: !hasMobile ? 171 : 110,
+                      height: !hasMobile ? 171 : 110,
+                      objectFit: 'cover',
+                    }}
+                  />
+                  <Image
+                    src={
+                      themeList[result?.reportStyle?.style?.colorKey as keyof typeof themeList]
+                        ?.image[1] || '/default-ai.png'
+                    }
+                    alt="result"
+                    width={171}
+                    height={171}
+                    style={{
+                      width: !hasMobile ? 171 : 110,
+                      height: !hasMobile ? 171 : 110,
+                      objectFit: 'cover',
+                    }}
+                  />
+                </>
               )}
-              <div className="w-[100%] h-[100%] flex flex-col gap-[8px]">
-                {result && (
-                  <>
-                    <Image
-                      src={
-                        themeList[result?.reportStyle?.style?.colorKey as keyof typeof themeList]
-                          ?.image[0] || '/default-ai.png'
-                      }
-                      alt="result"
-                      width={171}
-                      height={171}
-                      style={{
-                        width: !hasMobile ? 171 : 110,
-                        height: !hasMobile ? 171 : 110,
-                        objectFit: 'cover',
-                      }}
-                    />
-                    <Image
-                      src={
-                        themeList[result?.reportStyle?.style?.colorKey as keyof typeof themeList]
-                          ?.image[1] || '/default-ai.png'
-                      }
-                      alt="result"
-                      width={171}
-                      height={171}
-                      style={{
-                        width: !hasMobile ? 171 : 110,
-                        height: !hasMobile ? 171 : 110,
-                        objectFit: 'cover',
-                      }}
-                    />
-                  </>
-                )}
-              </div>
             </div>
-            <div className="w-[343px] md:w-[530px] tracking-[4px] text-center text-[28px] font-[900] mt-[16px] text-[#143784]">
-              {themeList[result?.reportStyle?.style?.colorKey as keyof typeof themeList]?.title ||
-                '明亮簡約風'}
+          </div>
+          <div className="w-[343px] md:w-[530px] tracking-[4px] text-center text-[28px] font-[900] mt-[16px] text-[#143784]">
+            {themeList[result?.reportStyle?.style?.colorKey as keyof typeof themeList]?.title ||
+              '明亮簡約風'}
+            <div
+              className="w-[100%] h-[3px] mt-[8px]"
+              style={{
+                background:
+                  'linear-gradient(90deg, #D8F2FF 0%, #00FFFF 20%, #09F9FE 21%, #23ECFD 22%, #4DD6FB 24%, #88B7F9 26%, #D190F6 28%, #FA7BF5 29%, #F685F5 30%, #EBA6F8 35%, #E2C1FA 41%, #DAD5FC 47%, #D5E4FE 54%, #D2EDFE 62%, #D2F0FF 75%, #008DFF 90%, #55B9FF 94%, #D8F2FF 100%)',
+              }}
+            ></div>
+          </div>
+          <div className="w-[343px] md:w-[530px] text-center mt-[16px]">
+            <span className="text-[16px] font-[700] text-[#143784]">
+              你的專屬 NP-COLOR ID 包括：
+            </span>
+            <div className="w-[100%] h-[171px] md:h-[263px] flex items-center justify-center gap-[8px] mt-[16px]">
               <div
-                className="w-[100%] h-[3px] mt-[8px]"
                 style={{
                   background:
-                    'linear-gradient(90deg, #D8F2FF 0%, #00FFFF 20%, #09F9FE 21%, #23ECFD 22%, #4DD6FB 24%, #88B7F9 26%, #D190F6 28%, #FA7BF5 29%, #F685F5 30%, #EBA6F8 35%, #E2C1FA 41%, #DAD5FC 47%, #D5E4FE 54%, #D2EDFE 62%, #D2F0FF 75%, #008DFF 90%, #55B9FF 94%, #D8F2FF 100%)',
+                    themeList[result?.reportStyle?.style?.colorKey as keyof typeof themeList]
+                      ?.color[0] || '#EBDACC',
                 }}
-              ></div>
-            </div>
-            <div className="w-[343px] md:w-[530px] text-center mt-[16px]">
-              <span className="text-[16px] font-[700] text-[#143784]">
-                你的專屬 NP-COLOR ID 包括：
-              </span>
-              <div className="w-[100%] h-[171px] md:h-[263px] flex items-center justify-center gap-[8px] mt-[16px]">
+                className="w-[171px] md:text-[28px] text-[20px] text-[#000000] md:w-[263px] h-[171px] md:h-[263px] text-left flex items-end font-[700] p-[8px] md:p-[16px]"
+              >
+                {result?.reportStyle?.colors[0]?.name}
+                <br />
+                {result?.reportStyle?.colors[0]?.id}
+              </div>
+              <div className="w-[81px] text-[#000000] md:w-[127px] h-[171px] md:h-[263px] flex flex-col text-[12px] gap-[8px] font-[700]">
                 <div
                   style={{
                     background:
                       themeList[result?.reportStyle?.style?.colorKey as keyof typeof themeList]
-                        ?.color[0] || '#EBDACC',
+                        ?.color[1] || '#E1E2DB',
                   }}
-                  className="w-[171px] md:text-[28px] text-[20px] text-[#000000] md:w-[263px] h-[171px] md:h-[263px] text-left flex items-end font-[700] p-[8px] md:p-[16px]"
+                  className="w-[81px] text-[12px] md:text-[18px] md:w-[127px] h-[81px] md:h-[127px] text-left flex items-end p-[8px]"
                 >
-                  {result?.reportStyle?.colors[0]?.name}
+                  {result?.reportStyle?.colors[1]?.name}
                   <br />
-                  {result?.reportStyle?.colors[0]?.id}
+                  {result?.reportStyle?.colors[1]?.id}
                 </div>
-                <div className="w-[81px] text-[#000000] md:w-[127px] h-[171px] md:h-[263px] flex flex-col text-[12px] gap-[8px] font-[700]">
-                  <div
-                    style={{
-                      background:
-                        themeList[result?.reportStyle?.style?.colorKey as keyof typeof themeList]
-                          ?.color[1] || '#E1E2DB',
-                    }}
-                    className="w-[81px] text-[12px] md:text-[18px] md:w-[127px] h-[81px] md:h-[127px] text-left flex items-end p-[8px]"
-                  >
-                    {result?.reportStyle?.colors[1]?.name}
-                    <br />
-                    {result?.reportStyle?.colors[1]?.id}
-                  </div>
-                  <div
-                    style={{
-                      background:
-                        themeList[result?.reportStyle?.style?.colorKey as keyof typeof themeList]
-                          ?.color[3] || '#B7A383',
-                    }}
-                    className="w-[81px] text-[12px] md:text-[18px] md:w-[127px] h-[81px] md:h-[127px] text-left flex items-end p-[8px]"
-                  >
-                    {result?.reportStyle?.colors[3]?.name}
-                    <br />
-                    {result?.reportStyle?.colors[3]?.id}
-                  </div>
-                </div>
-                <div className="w-[81px] text-[#000000] md:w-[127px] h-[171px] md:h-[263px] flex flex-col text-[12px] gap-[8px] font-[700]">
-                  <div
-                    style={{
-                      background:
-                        themeList[result?.reportStyle?.style?.colorKey as keyof typeof themeList]
-                          ?.color[2] || '#C1BBBC',
-                    }}
-                    className="w-[81px] text-[12px] md:text-[18px] md:w-[127px] h-[81px] md:h-[127px] text-left flex items-end p-[8px]"
-                  >
-                    {result?.reportStyle?.colors[2]?.name}
-                    <br />
-                    {result?.reportStyle?.colors[2]?.id}
-                  </div>
-                  <div
-                    style={{
-                      background:
-                        themeList[result?.reportStyle?.style?.colorKey as keyof typeof themeList]
-                          ?.color[4] || '#9B705A',
-                    }}
-                    className="w-[81px] text-[12px] md:text-[18px] md:w-[127px] h-[81px] md:h-[127px] text-left flex items-end p-[8px]"
-                  >
-                    {result?.reportStyle?.colors[4]?.name}
-                    <br />
-                    {result?.reportStyle?.colors[4]?.id}
-                  </div>
+                <div
+                  style={{
+                    background:
+                      themeList[result?.reportStyle?.style?.colorKey as keyof typeof themeList]
+                        ?.color[3] || '#B7A383',
+                  }}
+                  className="w-[81px] text-[12px] md:text-[18px] md:w-[127px] h-[81px] md:h-[127px] text-left flex items-end p-[8px]"
+                >
+                  {result?.reportStyle?.colors[3]?.name}
+                  <br />
+                  {result?.reportStyle?.colors[3]?.id}
                 </div>
               </div>
-            </div>
-            <div
-              className={`${hasMobile ? 'border-gradient' : 'border-gradient-desktop'} w-[343px] md:w-[530px] mt-[16px] text-[12px] md:text-[16px] font-[700] text-[#143784]`}
-            >
-              <div className="w-[100%] h-[100%] bg-[#fff] p-[8px] md:p-[16px]">
-                {result?.reportStyle?.style?.content ||
-                  '您嚮往陽光滿溢、整潔舒服的感覺，同時鍾情於現代簡約的純粹線條與原始質感。明亮簡約風正能滿足您的追求！乾淨的色彩、極簡的設計，保證讓你家明亮舒適，又能徹底relax，每一天都過得好自在！'}
+              <div className="w-[81px] text-[#000000] md:w-[127px] h-[171px] md:h-[263px] flex flex-col text-[12px] gap-[8px] font-[700]">
+                <div
+                  style={{
+                    background:
+                      themeList[result?.reportStyle?.style?.colorKey as keyof typeof themeList]
+                        ?.color[2] || '#C1BBBC',
+                  }}
+                  className="w-[81px] text-[12px] md:text-[18px] md:w-[127px] h-[81px] md:h-[127px] text-left flex items-end p-[8px]"
+                >
+                  {result?.reportStyle?.colors[2]?.name}
+                  <br />
+                  {result?.reportStyle?.colors[2]?.id}
+                </div>
+                <div
+                  style={{
+                    background:
+                      themeList[result?.reportStyle?.style?.colorKey as keyof typeof themeList]
+                        ?.color[4] || '#9B705A',
+                  }}
+                  className="w-[81px] text-[12px] md:text-[18px] md:w-[127px] h-[81px] md:h-[127px] text-left flex items-end p-[8px]"
+                >
+                  {result?.reportStyle?.colors[4]?.name}
+                  <br />
+                  {result?.reportStyle?.colors[4]?.id}
+                </div>
               </div>
             </div>
           </div>
-        )}
+          <div
+            className={`${hasMobile ? 'border-gradient' : 'border-gradient-desktop'} w-[343px] md:w-[530px] mt-[16px] text-[12px] md:text-[16px] font-[700] text-[#143784]`}
+          >
+            <div className="w-[100%] h-[100%] bg-[#fff] p-[8px] md:p-[16px]">
+              {result?.reportStyle?.style?.content ||
+                '您嚮往陽光滿溢、整潔舒服的感覺，同時鍾情於現代簡約的純粹線條與原始質感。明亮簡約風正能滿足您的追求！乾淨的色彩、極簡的設計，保證讓你家明亮舒適，又能徹底relax，每一天都過得好自在！'}
+            </div>
+          </div>
+        </div>
 
         <div>
           {hasMobile ? (
@@ -254,8 +310,11 @@ export default function Result() {
                     files: [file],
                     url: window.location.href,
                   })
-                  .catch(() => {
-                    Alert.show('分享失败');
+                  .catch((error) => {
+                    // 用户取消分享时不显示错误提示
+                    if (error.name !== 'AbortError') {
+                      Alert.show('分享失败');
+                    }
                   });
               }}
               className="w-[311px] h-[44px] mt-[24px] flex items-center justify-center rounded-[25px] text-[15px] font-[700] text-[#FFFFFF] mb-[16px] transition-all duration-300
