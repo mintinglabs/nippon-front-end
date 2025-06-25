@@ -33,12 +33,17 @@ export default function Loading() {
         }
         if (res.data.status === 'timeout') {
           setIsError(true);
+          if (timer.current) {
+            clearInterval(timer.current);
+            timer.current = null;
+          }
           return;
         }
         if (res.data.status === 'ai_image_done' || res.data.status === 'done') {
           localStorage.removeItem('formData');
           if (timer.current) {
             clearInterval(timer.current);
+            timer.current = null;
           }
           router.push('/result');
         }

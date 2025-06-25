@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 'use client';
 import { RedoOutlined } from '@ant-design/icons';
 import Image from 'next/image';
@@ -126,7 +127,7 @@ export default function Result() {
       <div className="w-[100%] md:w-[600px] bg-[#fff] flex flex-col items-center">
         {shareImg && (
           <div className="w-[100%] md:w-[600px] flex flex-col items-center bg-[#fff] absolute top-0 left-[50%] translate-x-[-50%]">
-            <Image
+            <img
               src={shareImg}
               alt="result"
               width={2400}
@@ -140,7 +141,7 @@ export default function Result() {
           id="result-container"
           className="w-[100%] flex flex-col items-center bg-[url('/result_share_bg.png')] bg-cover bg-center pb-[24px] md:pb-[32px]"
         >
-          <Image
+          <img
             src="/result_top_bg.png"
             alt="result"
             width={2400}
@@ -149,26 +150,27 @@ export default function Result() {
           />
           <div className="w-[343px] md:w-[530px] h-[228px] md:h-[351px] flex items-center justify-center gap-[8px] mt-[16px]">
             {result && (
-              <Image
+              <img
                 src={
                   result && result.aiImages
                     ? result.aiImages[1] || '/default-ai.png'
                     : '/default-ai.png'
                 }
                 alt="result"
-                width={1152}
-                height={768}
+                width={hasMobile ? 228 : 351}
+                height={hasMobile ? 228 : 351}
                 style={{
                   width: hasMobile ? 228 : 351,
                   height: hasMobile ? 228 : 351,
                   objectFit: 'cover',
+                  display: 'block',
                 }}
               />
             )}
             <div className="w-[100%] h-[100%] flex flex-col gap-[8px]">
               {result && (
                 <>
-                  <Image
+                  <img
                     src={
                       themeList[result?.reportStyle?.style?.colorKey as keyof typeof themeList]
                         ?.image[0] || '/default-ai.png'
@@ -182,7 +184,7 @@ export default function Result() {
                       objectFit: 'cover',
                     }}
                   />
-                  <Image
+                  <img
                     src={
                       themeList[result?.reportStyle?.style?.colorKey as keyof typeof themeList]
                         ?.image[1] || '/default-ai.png'
