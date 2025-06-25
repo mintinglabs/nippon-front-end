@@ -125,7 +125,7 @@ export default function Result() {
     <div className="bg-[url('/desktop_bg.png')] bg-cover bg-center flex flex-col items-center">
       <div className="w-[100%] md:w-[600px] bg-[#fff] flex flex-col items-center">
         {shareImg && (
-          <div className="w-[100%] flex flex-col items-center bg-[#fff] absolute top-0 left-0">
+          <div className="w-[100%] md:w-[600px] flex flex-col items-center bg-[#fff] absolute top-0 left-[50%] translate-x-[-50%]">
             <Image
               src={shareImg}
               alt="result"
