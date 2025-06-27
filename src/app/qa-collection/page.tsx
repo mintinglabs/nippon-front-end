@@ -165,7 +165,7 @@ export default function QACollection() {
           `}
             >
               {isLoading && <Spin indicator={<LoadingOutlined style={{ color: '#fff' }} spin />} />}
-              下一步
+              {currentStep === QNA.length ? '完成！' : '下一步'}
             </button>
           </div>
         </div>

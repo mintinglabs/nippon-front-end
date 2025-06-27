@@ -1,54 +1,26 @@
 /* eslint-disable @next/next/no-img-element */
 'use client';
-import { RedoOutlined } from '@ant-design/icons';
-import Image from 'next/image';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import Alert from '../../../components/Alert';
-import ConnectIcon from '../../../components/ConnectIcon';
 import { isMobile } from 'react-device-detect';
-import { toPng } from 'html-to-image';
 import { getGenerateInfo } from '../../../apis/business';
-import { adImgList, themeList } from './reducer';
+import { themeList } from './reducer';
 import FullSpin from '../../../components/FullSpin';
+import Image from 'next/image';
 
 export default function Result() {
   const router = useRouter();
-  const [isCopied, setIsCopied] = useState(false);
+  const searchParams = useSearchParams();
   const [hasMobile, setHasMobile] = useState(false);
-
-  const [shareImg, setShareImg] = useState<string>('');
 
   const [isLoading, setIsLoading] = useState(false);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [result, setResult] = useState<any>(null);
 
-  const generateImage = async () => {
-    const node = document.getElementById('result-container');
-    if (!node) return;
-
-    try {
-      const dataUrl = await toPng(node, {
-        quality: 1.0,
-        pixelRatio: 2,
-        backgroundColor: '#ffffff',
-        style: {
-          transform: 'scale(1)',
-          transformOrigin: 'top left',
-        },
-      });
-      setShareImg(dataUrl);
-    } catch (error) {
-      console.error('生成图片失败:', error);
-      Alert.show('生成图片失败');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   const getResult = async () => {
-    const uuid = localStorage.getItem('uuid');
+    const uuid = searchParams.get('uuid');
     if (!uuid) {
       router.push('/');
       return;
@@ -76,51 +48,6 @@ export default function Result() {
   };
 
   useEffect(() => {
-    if (result) {
-      setIsLoading(true);
-      // 等待所有图片加载完成后再生成图片
-      const waitForImagesToLoad = () => {
-        const node = document.getElementById('result-container');
-        if (!node) return;
-
-        const images = node.querySelectorAll('img');
-        if (images.length === 0) {
-          // 如果没有图片，直接生成
-          generateImage();
-          return;
-        }
-
-        let loadedCount = 0;
-        const totalImages = images.length;
-
-        const checkAllImagesLoaded = () => {
-          loadedCount++;
-          if (loadedCount === totalImages) {
-            // 所有图片都加载完成，生成分享图片
-            setTimeout(() => {
-              generateImage();
-            }, 500); // 稍微延迟一下确保渲染完成
-          }
-        };
-
-        images.forEach((img) => {
-          if (img.complete) {
-            // 图片已经加载完成
-            checkAllImagesLoaded();
-          } else {
-            // 监听图片加载事件
-            img.addEventListener('load', checkAllImagesLoaded);
-            img.addEventListener('error', checkAllImagesLoaded); // 即使加载失败也继续
-          }
-        });
-      };
-
-      // 使用 setTimeout 确保 DOM 已经渲染
-      setTimeout(waitForImagesToLoad, 100);
-    }
-  }, [result, hasMobile]);
-
-  useEffect(() => {
     setHasMobile(isMobile);
     getResult();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -128,18 +55,6 @@ export default function Result() {
   return (
     <div className="bg-[url('/desktop_bg.png')] bg-cover bg-center flex flex-col items-center">
       <div className="w-[100%] md:w-[600px] bg-[#fff] flex flex-col items-center">
-        {shareImg && (
-          <div className="w-[100%] md:w-[600px] flex flex-col items-center bg-[#fff] absolute top-0 left-[50%] translate-x-[-50%]">
-            <img
-              src={shareImg}
-              alt="result"
-              width={2400}
-              height={598}
-              style={{ width: '100%', height: 'auto' }}
-            />
-          </div>
-        )}
-
         <div
           id="result-container"
           className="w-[100%] flex flex-col items-center bg-[url('/result_share_bg.png')] bg-cover bg-center pb-[24px] md:pb-[32px]"
@@ -296,169 +211,13 @@ export default function Result() {
             </div>
           </div>
         </div>
-
-        <div className="w-[100%] flex flex-col items-center">
-          <Image
-            src="/ni-color-id.png"
-            alt="result"
-            width={1500}
-            height={184}
-            style={{ width: '100%', height: 'auto' }}
-          />
-          {hasMobile ? (
-            <button
-              onClick={async () => {
-                if (!shareImg) {
-                  Alert.show('分享失败, 请刷新重试。');
-                  return;
-                }
-
-                const blob = await (await fetch(shareImg)).blob();
-                const file = new File([blob], 'color-result.png', { type: 'image/png' });
-                navigator
-                  .share({
-                    title: 'Nippon',
-                    text: 'Nippon',
-                    files: [file],
-                    url: window.location.href,
-                  })
-                  .catch((error) => {
-                    // 用户取消分享时不显示错误提示
-                    if (error.name !== 'AbortError') {
-                      Alert.show('分享失败');
-                    }
-                  });
-              }}
-              className="w-[343px] md:w-[400px] h-[44px] mt-[24px] flex items-center justify-center rounded-[25px] text-[14px] font-[700] text-[#FFFFFF] mb-[16px] transition-all duration-300
-          bg-[#E30211]"
-            >
-              分享結果
-            </button>
-          ) : (
-            <button
-              className={`w-[343px] md:w-[400px] h-[48px] mt-[24px] mb-[16px] flex items-center justify-center gap-[8px] rounded-[25px] text-[14px] md:text-[16px] font-[700] text-[#FF7CFF] transition-all duration-300
-          `}
-            >
-              <Image src="/right_click.png" alt="result" width={48} height={48} />
-              點擊右鍵另存圖片
-            </button>
-          )}
-          <button
-            onClick={() => {
-              navigator.clipboard
-                .writeText(`${window.location.protocol}//${window.location.host}`)
-                .then(() => {
-                  setIsCopied(true);
-                  setTimeout(() => {
-                    setIsCopied(false);
-                  }, 3000);
-                })
-                .catch(() => {
-                  Alert.show('複製失敗');
-                });
-            }}
-            className={`w-[343px] md:w-[400px] h-[44px] flex items-center justify-center gap-[8px] rounded-[25px] text-[14px] md:text-[15px] font-[700] text-[#002859] mb-[24px] transition-all duration-300
-            border-[1px] border-[#002859] cursor-pointer
-            ${isCopied ? 'bg-[#CACACA] text-[#fff] border-[1px] border-[#A1A1A1]' : ''}
-          `}
-          >
-            {isCopied ? '複製成功' : '複製NP-COLOR ID體驗連結邀請朋友一齊玩'}
-            <ConnectIcon color={isCopied ? '#fff' : '#002859'} />
-          </button>
-          <button
-            onClick={() => {
-              router.push('/');
-            }}
-            className={`w-[400px] h-[44px] flex items-center justify-center gap-[8px] rounded-[25px] text-[15px] font-[700] text-[#002859] mb-[24px] transition-all duration-300
-          `}
-          >
-            再玩一次
-            <RedoOutlined className="text-[#002859] rotate-90 scale-x-[-1] mt-[2px]" />
-          </button>
-        </div>
-        <div className="w-[100%] flex flex-col bg-[#02274F]">
-          <Image
-            src={
-              adImgList[result?.reportStyle?.style?.code as keyof typeof adImgList] ||
-              '/result_ads1.png'
-            }
-            alt="result"
-            width={1500}
-            height={703}
-            style={{ width: '100%', height: 'auto' }}
-          />
-
-          <Image
-            src="/result_ads3.png"
-            alt="result"
-            width={1500}
-            height={1150}
-            style={{ width: '100%', height: 'auto' }}
-          />
-          <div className="w-[100%] h-[76px] mt-[-5px] z-[1] pt-[10px] flex items-center justify-center bg-[#02274F]">
-            <a
-              href="https://www.google.com"
-              target="_blank"
-              style={{
-                borderBottom: '3px solid #FFFFFF',
-              }}
-              className={`w-[311px] h-[44px] flex items-center justify-center rounded-[25px] text-[15px] font-[700] text-[#00284F] transition-all duration-300
-          bg-[#32F1FF]
-          `}
-            >
-              立即參加
-            </a>
-          </div>
-          <Image
-            src="/result_ads4.png"
-            alt="result"
-            width={1500}
-            height={978}
-            style={{ width: '100%', height: 'auto' }}
-          />
-          <div className="w-[100%] h-[76px] flex items-center justify-center">
-            <a
-              href="https://www.google.com"
-              target="_blank"
-              style={{
-                borderBottom: '3px solid #9EBF1A',
-              }}
-              className={`w-[311px] h-[44px] flex items-center justify-center rounded-[25px] text-[15px] font-[700] text-[#fff] transition-all duration-300
-          bg-[#2E7B43]
-          `}
-            >
-              立即購買
-            </a>
-          </div>
-          <Image
-            src="/result_ads5.png"
-            alt="result"
-            width={1500}
-            height={118}
-            style={{ width: '100%', height: 'auto' }}
-          />
-          <div className="w-[100%] h-[76px] flex items-center justify-center">
-            <a
-              href="https://www.google.com"
-              target="_blank"
-              style={{
-                borderBottom: '3px solid #32F1FF',
-              }}
-              className={`w-[311px] h-[44px] flex items-center justify-center rounded-[25px] text-[15px] font-[700] text-[#00284F] transition-all duration-300
-          bg-[#fff]
-          `}
-            >
-              到立邦網站了解更多
-            </a>
-          </div>
-          <Image
-            src="/result_ads6.png"
-            alt="result"
-            width={1500}
-            height={329}
-            style={{ width: '100%', height: 'auto' }}
-          />
-        </div>
+        <Image
+          src="https://storage.googleapis.com/assets-presslogic/nippon/base/nippon_result_ads1.png"
+          alt="result"
+          width={2400}
+          height={598}
+          style={{ width: '100%', height: 'auto' }}
+        />
       </div>
 
       <FullSpin open={isLoading} text="加載中..." />

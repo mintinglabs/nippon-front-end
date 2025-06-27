@@ -88,14 +88,11 @@ input:focus {
   display: block;
   position: relative;
   height: 24px;
-  width: 80%;
+  width: 85%;
   border: 2px solid #fff;
   border-radius: 100px;
   overflow: hidden;
 
-  @media (min-width: 768px) {
-    height: 32px;
-  }
 }
 
 .loader::after {
@@ -110,11 +107,6 @@ input:focus {
   left: 0;
   box-sizing: border-box;
   animation: animloader 3s linear infinite;
-
-  @media (min-width: 768px) {
-    width: 120px;
-    height: 24px;
-  }
 }
 
 @keyframes animloader {

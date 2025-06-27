@@ -37,42 +37,47 @@ export default function Home() {
       id: 1,
       title: '你的姓名',
       formItem: (
-        <input
-          type="text"
-          value={formData.name}
-          onChange={(e) => {
-            const value = e.target.value;
-            // 如果正在手写输入，允许所有输入
-            if (isComposing) {
-              setFormData({ ...formData, name: value });
-              return;
-            }
+        <>
+          <div className="text-[14px] font-[400] text-[#FFFFFF] mt-[8px]">
+            (只限中英文字，不含空格或符號)
+          </div>
+          <input
+            type="text"
+            value={formData.name}
+            onChange={(e) => {
+              const value = e.target.value;
+              // 如果正在手写输入，允许所有输入
+              if (isComposing) {
+                setFormData({ ...formData, name: value });
+                return;
+              }
 
-            // 允许空值
-            if (value === '') {
-              setFormData({ ...formData, name: value });
-              return;
-            }
+              // 允许空值
+              if (value === '') {
+                setFormData({ ...formData, name: value });
+                return;
+              }
 
-            // 只保留英文字母，过滤掉其他字符
-            const filteredValue = value.replace(/[^A-Za-z]/g, '');
-            setFormData({ ...formData, name: filteredValue });
-          }}
-          onCompositionStart={() => {
-            setIsComposing(true);
-          }}
-          onCompositionEnd={(e) => {
-            setIsComposing(false);
-            // 手写输入结束时进行最终验证
-            // 清除字符中所有的空格
-            const value = (e.target as HTMLInputElement).value.replace(/\s/g, '');
-            // 只保留英文字母，过滤掉其他字符
-            const filteredValue = value.replace(/[^A-Za-z]/g, '');
-            setFormData({ ...formData, name: filteredValue });
-          }}
-          className="w-[311px] h-[40px] rounded-[8px] text-center bg-[#FFFFFF] border text-[16px]  p-[10px] mt-[8px] mb-[24px]"
-          placeholder="請輸入英文名"
-        />
+              // 只保留英文字母，过滤掉其他字符
+              const filteredValue = value.replace(/[^A-Za-z\u4e00-\u9fa5]/g, '');
+              setFormData({ ...formData, name: filteredValue });
+            }}
+            onCompositionStart={() => {
+              setIsComposing(true);
+            }}
+            onCompositionEnd={(e) => {
+              setIsComposing(false);
+              // 手写输入结束时进行最终验证
+              // 清除字符中所有的空格
+              const value = (e.target as HTMLInputElement).value.replace(/\s/g, '');
+              // 只保留英文字母，过滤掉其他字符
+              const filteredValue = value.replace(/[^A-Za-z\u4e00-\u9fa5]/g, '');
+              setFormData({ ...formData, name: filteredValue });
+            }}
+            className="w-[311px] md:w-[400px] h-[40px] rounded-[8px] text-center bg-[#FFFFFF] border text-[16px]  p-[10px] mt-[8px] mb-[24px]"
+            placeholder="請輸入中文或英文名"
+          />
+        </>
       ),
     },
     {
@@ -80,6 +85,9 @@ export default function Home() {
       title: '你的電郵',
       formItem: (
         <div className="mb-[24px] flex flex-col items-center justify-center">
+          <div className="text-[14px] font-[400] text-[#FFFFFF] mt-[8px]">
+            (Al虚擬家居預覽及配色指南會透過電郵發送)
+          </div>
           <input
             type="text"
             value={formData.email}
@@ -87,7 +95,7 @@ export default function Home() {
               setEmailError(false);
               setFormData({ ...formData, email: e.target.value });
             }}
-            className={`w-[311px] h-[40px] rounded-[8px] text-center bg-[#FFFFFF] border text-[16px]  p-[10px] mt-[8px]
+            className={`w-[311px] md:w-[400px] h-[40px] rounded-[8px] text-center bg-[#FFFFFF] border text-[16px]  p-[10px] mt-[8px]
               ${emailError ? 'text-[#FF4747]' : ''}
               `}
             placeholder="example@mail.com"
@@ -105,7 +113,7 @@ export default function Home() {
       title: '上傳相片',
       formItem: (
         <>
-          <div className="w-[311px] text-center text-[14px] font-[400] text-[#FFFFFF] mt-[8px]">
+          <div className="w-[311px] md:w-[400px] text-center text-[14px] font-[400] text-[#FFFFFF] mt-[8px]">
             （相片規格僅限1人，正面及半身，五官需清晰可見，嚴禁色情與暴力。）
           </div>
           {formData.image ? (
@@ -163,7 +171,7 @@ export default function Home() {
                 }}
                 setIsUploading={setIsUploading}
               >
-                <button className="w-[311px] h-[44px] flex items-center cursor-pointer justify-center rounded-[25px] bg-[#FF7CFF] text-[15px] font-[700] text-[#FFFFFF] mt-[8px]">
+                <button className="w-[311px] md:w-[174px] h-[44px] flex items-center cursor-pointer justify-center rounded-[25px] bg-[#FF7CFF] text-[15px] font-[700] text-[#FFFFFF] mt-[8px]">
                   <Image
                     className="mr-[8px]"
                     src="/upload.svg"
@@ -263,40 +271,29 @@ export default function Home() {
           style={{
             margin: '0 auto',
           }}
-          className="flex w-[375px] h-[510px] md:w-[800px] md:h-[1152px] flex-col relative items-center justify-center md:bg-[#0C274C]"
+          className="flex w-[375px] h-[510px] md:w-[800px] md:h-[1038px] flex-col relative items-center justify-center md:bg-[#0C274C]"
         >
-          <Image
+          {/* <Image
             src="/home_bg_low.gif"
             alt="logo"
             width={1499}
             height={1152}
             style={{ width: hasMobile ? '375px' : '800px', height: '100%' }}
-          />
+          /> */}
           <Image
-            src="/home_bg_low.png"
+            src="/home_top.png"
             alt="logo"
             width={1499}
             height={1152}
             className="absolute top-0 left-[50%] translate-x-[-50%] right-0 bottom-0"
             style={{ width: hasMobile ? '375px' : '800px', height: '100%' }}
           />
-          {/* <Image
-            src="/banner.png"
-            alt="logo"
-            width={1499}
-            height={1152}
-            style={{ width: hasMobile ? '375px' : '800px', height: '100%' }}
-          />
-          <Image
-            className="mt-[-2px]"
-            src="/id-lab-title.png"
-            alt="logo"
-            width={1373}
-            height={240}
-            style={{ width: hasMobile ? '343px' : '733px', height: 'auto' }}
-          /> */}
         </div>
-        <div className="md:w-[800px] md:bg-[#0C274C]">
+        <div className="md:w-[800px] z-[1] md:bg-[#0C274C] flex flex-col items-center justify-center">
+          <div className="w-[311px] md:w-[400px] mt-[21px] text-center mb-[24px] text-[16px] font-[400] text-[#FFFFFF]">
+            只需填寫簡單資料，上載您的照片並回答幾個家居風格問題，Nippon Paint
+            即可為您創造獨一無二的虛擬家居風格及專屬您的 COLOR ID！
+          </div>
           <div className="mb-[24px]">
             {idLabFormConf.map((item) => (
               <div className="flex flex-col items-center justify-center" key={item.id}>
@@ -308,7 +305,7 @@ export default function Home() {
               </div>
             ))}
           </div>
-          <div className="w-[311px] flex gap-[8px] m-[auto] text-[12px] font-[400] text-[#FFFFFF]">
+          <div className="w-[311px] md:w-[400px] flex gap-[8px] m-[auto] text-[12px] font-[400] text-[#FFFFFF]">
             <Checkbox checked={isAgreeChecked} onChange={setIsAgreeChecked} />
             <span>
               本程式將使用您的姓名及照片來為您提供AI
@@ -323,11 +320,11 @@ export default function Home() {
           <div className="flex justify-center">
             <button
               onClick={handleSubmit}
-              className={`w-[311px] h-[44px] flex gap-[8px] items-center cursor-pointer justify-center rounded-[25px] text-[15px] font-[700] text-[#FFFFFF] mt-[32px] mb-[24px] transition-all duration-300
+              className={`w-[311px] md:w-[400px] h-[44px] flex gap-[8px] items-center cursor-pointer justify-center rounded-[25px] text-[15px] font-[700] text-[#FFFFFF] mt-[32px] mb-[24px] transition-all duration-300
                         ${!isLoading && isNextButtonDisabled ? 'bg-[#E30211]' : 'bg-[#CACACA]'}`}
             >
               {isLoading && <Spin indicator={<LoadingOutlined style={{ color: '#fff' }} spin />} />}
-              下一步
+              下一步: 回答4條簡單MC題！
             </button>
 
             <Modal
