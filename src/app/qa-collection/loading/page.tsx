@@ -9,6 +9,7 @@ import { isMobile } from 'react-device-detect';
 export default function Loading() {
   const imgRef = useRef<HTMLImageElement>(null);
   const [maskHeight, setMaskHeight] = useState('auto');
+  const [maskBottomHeight, setMaskBottomHeight] = useState(0);
   const router = useRouter();
   const [isError, setIsError] = useState(false);
 
@@ -19,8 +20,11 @@ export default function Loading() {
   useEffect(() => {
     if (imgRef.current) {
       setMaskHeight(imgRef.current.height / 2.22 + 'px');
+      // imgRef 距离底部的距离
+      const maskBottomHeight = window.innerHeight - imgRef.current.getBoundingClientRect().bottom;
+      setMaskBottomHeight(maskBottomHeight + 142);
     }
-  }, [imgRef, hasMobile]);
+  }, [imgRef]);
 
   const timer = useRef<NodeJS.Timeout | null>(null);
 
@@ -37,7 +41,7 @@ export default function Loading() {
           setIsError(true);
           return;
         }
-        if (res.data.status === 'timeout') {
+        if (res.data.status === 'timeout' || res.data.status === 'error') {
           setIsError(true);
           if (timer.current) {
             clearInterval(timer.current);
@@ -96,7 +100,12 @@ export default function Loading() {
           style={{ width: hasMobile ? '100%' : '300px', height: 'auto' }}
         />
 
-        <div className="w-[100%] h-[360px] hidden md:block z-[1] absolute bottom-0 left-0 right-0 bg-[#003888]"></div>
+        <div
+          style={{
+            height: maskBottomHeight,
+          }}
+          className="w-[100%] hidden md:block z-[1] absolute bottom-0 left-0 right-0 bg-[#003888]"
+        ></div>
       </div>
       <Modal
         title="抱歉😣生成遇到問題"

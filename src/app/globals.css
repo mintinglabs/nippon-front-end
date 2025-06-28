@@ -92,7 +92,9 @@ input:focus {
   border: 2px solid #fff;
   border-radius: 100px;
   overflow: hidden;
-
+  will-change: transform;
+  transform: translateZ(0);
+  backface-visibility: hidden;
 }
 
 .loader::after {
@@ -107,17 +109,18 @@ input:focus {
   left: 0;
   box-sizing: border-box;
   animation: animloader 3s linear infinite;
+  will-change: transform;
+  transform: translateZ(0);
+  backface-visibility: hidden;
 }
 
 @keyframes animloader {
   0% {
-    left: 0;
     transform: translateX(-100%);
   }
 
   100% {
-    left: 100%;
-    transform: translateX(0%);
+    transform: translateX(400%);
   }
 }
 

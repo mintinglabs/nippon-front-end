@@ -13,7 +13,7 @@ const StepProgress = ({ currentStep = 1, totalStep = 4 }) => {
   const percent = (currentStep / totalStep) * 100;
 
   return (
-    <div className="relative w-[311px] h-[16px] flex items-center">
+    <div className="relative w-[255px] md:w-[311px] h-[16px] flex items-center">
       {/* 白色圆角背景 */}
       <div className="absolute left-0 top-0 w-full h-full bg-white rounded-full"></div>
       {/* 红色进度条 */}
