@@ -63,7 +63,7 @@ input:focus {
 
 @keyframes bg-scroll-y-desktop {
   0% {
-    background-position: 0 2285px;
+    background-position: 0 3480px;
   }
 
   100% {
@@ -71,14 +71,9 @@ input:focus {
   }
 }
 
-.bg-scroll-y {
-  background-size: 343px 980px;
-  background-repeat: repeat-y;
-  animation: bg-scroll-y 20s linear infinite;
-}
 
 .bg-scroll-y-desktop {
-  background-size: 800px 2285px;
+  background-size: cover;
   background-repeat: repeat-y;
   animation: bg-scroll-y-desktop 20s linear infinite;
 }

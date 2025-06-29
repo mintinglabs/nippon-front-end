@@ -19,12 +19,12 @@ export default function Loading() {
   }, []);
   useEffect(() => {
     if (imgRef.current) {
-      setMaskHeight(imgRef.current.height / 2.22 + 'px');
+      setMaskHeight(imgRef.current.height / (hasMobile ? 2.25 : 2.2) + 'px');
       // imgRef 距离底部的距离
       const maskBottomHeight = window.innerHeight - imgRef.current.getBoundingClientRect().bottom;
       setMaskBottomHeight(maskBottomHeight + 142);
     }
-  }, [imgRef]);
+  }, [imgRef, hasMobile]);
 
   const timer = useRef<NodeJS.Timeout | null>(null);
 
@@ -55,7 +55,7 @@ export default function Loading() {
             clearInterval(timer.current);
             timer.current = null;
           }
-          router.push('/result');
+          // router.push('/result');
         }
       }
     }, 5000);
@@ -75,15 +75,23 @@ export default function Loading() {
     >
       <div className="relative md:w-[800px] h-[100%] flex flex-col items-center bg-[#02274F] m-center">
         <div
-          className="absolute w-[100%] md:w-[800px] z-[10] top-0 left-0 md:left-[50%] md:translate-x-[-50%] h-[30%] bg-[#02274F] pl-[16px] pr-[16px] flex flex-col items-center"
-          style={{ height: maskHeight, gap: hasMobile ? '32px' : '16px' }}
+          className="absolute w-[100%] md:w-[800px] z-[10] top-0 left-0 md:left-[50%] md:translate-x-[-50%] h-[30%] bg-[#02274F] flex flex-col items-center"
+          style={{
+            height: maskHeight,
+            gap: hasMobile ? '26px' : '19px',
+          }}
         >
           <Image
             src="/loading_bg.png"
             alt="loading"
             width={1200}
             height={940}
-            style={{ width: hasMobile ? '100%' : '300px', height: 'auto' }}
+            style={{
+              width: hasMobile ? '100%' : '300px',
+              height: 'auto',
+              marginTop: hasMobile ? '-20px' : '0',
+              paddingBottom: hasMobile ? '15px' : '0',
+            }}
           />
           <div className="md:w-[300px] w-[100%] z-[10] flex items-center justify-center">
             <span className="loader" />
@@ -97,6 +105,7 @@ export default function Loading() {
           alt="loading"
           width={1501}
           height={3249}
+          unoptimized
           style={{ width: hasMobile ? '100%' : '300px', height: 'auto' }}
         />
 

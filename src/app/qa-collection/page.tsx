@@ -93,8 +93,13 @@ export default function QACollection() {
 
   return (
     <div className="md:flex md:min-h-[100vh] flex-col items-center md:bg-[url('/desktop_bg.png')] bg-cover bg-center">
-      <div className="w-[100%] md:w-[800px] md:min-h-[100vh] bg-[#002859] pt-[16px] flex flex-col items-center justify-center">
-        <div className="w-[343px] md:w-[768px] bg-[url('/collection_bg.png')] bg-scroll-y-desktop">
+      <div className="w-[100%] flex-1 p-[16px] md:p-[32px] pb-[0] md:w-[800px] bg-[#002859] pt-[16px] flex flex-col items-center justify-center">
+        <div
+          className="w-[100%] flex-1 bg-scroll-y-desktop"
+          style={{
+            backgroundImage: `url("/collection_bg${currentStep}.png")`,
+          }}
+        >
           <header
             className={`
           w-full z-10 flex justify-center items-center fixed top-0 left-0 right-0 bg-[#002859]
@@ -124,7 +129,7 @@ export default function QACollection() {
             </div>
             <StepProgress currentStep={currentStep} totalStep={4} />
           </div>
-          <div className="mt-[24px] flex flex-col items-center justify-center">
+          <div className="mt-[12px] flex flex-col items-center justify-center">
             <span className="text-[#FF7CFF] text-[24px] font-bold text-center">
               {QNA[currentStep - 1].question}
             </span>
@@ -169,8 +174,8 @@ export default function QACollection() {
             </button>
           </div>
         </div>
-        <div className="w-[100%] md:w-[800px] h-[68px] md:h-[145px] bg-[url('/nippon-ad.png')]  bg-cover bg-center" />
       </div>
+      <div className="w-[100%] md:w-[800px] h-[68px] md:h-[145px] bg-[url('/nippon-ad.png')]  bg-cover bg-center" />
       <Alert.Container />
     </div>
   );

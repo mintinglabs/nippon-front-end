@@ -3,10 +3,10 @@
 import { RedoOutlined } from '@ant-design/icons';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Alert from '../../../components/Alert';
 import ConnectIcon from '../../../components/ConnectIcon';
-import { isMobile } from 'react-device-detect';
+import { isMobile, isIOS } from 'react-device-detect';
 import { toPng } from 'html-to-image';
 import { getGenerateInfo } from '../../../apis/business';
 import { adImgList, themeList } from './reducer';
@@ -14,6 +14,7 @@ import FullSpin from '../../../components/FullSpin';
 
 export default function Result() {
   const router = useRouter();
+  const resultContainerRef = useRef<HTMLDivElement>(null);
   const [isCopied, setIsCopied] = useState(false);
   const [hasMobile, setHasMobile] = useState(false);
 
@@ -25,23 +26,54 @@ export default function Result() {
   const [result, setResult] = useState<any>(null);
 
   const generateImage = async () => {
-    const node = document.getElementById('result-container');
+    const node = resultContainerRef.current;
     if (!node) return;
 
+    setIsLoading(true);
+
     try {
+      // 强制重新加载所有 <img>
+      const images = node.querySelectorAll('img');
+      await Promise.all(
+        Array.from(images).map((img) => {
+          return new Promise<void>((resolve) => {
+            img.crossOrigin = 'anonymous'; // 重要：设置 crossOrigin
+            const clone = new window.Image();
+            clone.crossOrigin = 'anonymous';
+            clone.src = img.src;
+            clone.onload = () => {
+              img.src = clone.src; // 强制刷新
+              resolve();
+            };
+            clone.onerror = () => resolve(); // 加载失败也不阻塞
+          });
+        }),
+      );
+
+      // 等待 iOS 渲染恢复（双帧 + 延迟）
+      // await new Promise((r) =>
+      //   requestAnimationFrame(() => requestAnimationFrame(() => setTimeout(r, 100))),
+      // );
+
+      // backgroundColor: '#ffffff',
+      //   cacheBust: true,
+      //   skipAutoScale: true,
+      //   style: {
+      //     transform: 'scale(1)',
+      //     transformOrigin: 'top left',
+      //   },
+      await document.fonts.ready; // 等待所有字体加载完
+
       const dataUrl = await toPng(node, {
-        quality: 1.0,
+        quality: 0.95,
         pixelRatio: 2,
-        backgroundColor: '#ffffff',
-        style: {
-          transform: 'scale(1)',
-          transformOrigin: 'top left',
-        },
       });
+
       setShareImg(dataUrl);
+      return dataUrl;
     } catch (error) {
       console.error('生成图片失败:', error);
-      Alert.show('生成图片失败');
+      Alert.show('生成圖片失敗，請重試');
     } finally {
       setIsLoading(false);
     }
@@ -76,11 +108,11 @@ export default function Result() {
   };
 
   useEffect(() => {
-    if (result) {
+    if (result && !hasMobile) {
       setIsLoading(true);
       // 等待所有图片加载完成后再生成图片
       const waitForImagesToLoad = () => {
-        const node = document.getElementById('result-container');
+        const node = resultContainerRef.current;
         if (!node) return;
 
         const images = node.querySelectorAll('img');
@@ -120,15 +152,18 @@ export default function Result() {
     }
   }, [result, hasMobile]);
 
+  const [hasIOS, setHasIOS] = useState(false);
+
   useEffect(() => {
     setHasMobile(isMobile);
+    setHasIOS(isIOS);
     getResult();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (
     <div className="bg-[url('/desktop_bg.png')] bg-cover bg-center flex flex-col items-center">
       <div className="w-[100%] md:w-[600px] bg-[#fff] flex flex-col items-center">
-        {shareImg && (
+        {shareImg && !hasMobile && (
           <div className="w-[100%] md:w-[600px] flex flex-col items-center bg-[#fff] absolute top-0 left-[50%] translate-x-[-50%]">
             <img
               src={shareImg}
@@ -141,7 +176,12 @@ export default function Result() {
         )}
 
         <div
-          id="result-container"
+          ref={resultContainerRef}
+          style={{
+            fontFamily: hasIOS
+              ? '-apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, Arial, sans-serif'
+              : 'Noto Sans TC, sans-serif',
+          }}
           className="w-[100%] flex flex-col items-center bg-[url('/result_share_bg.png')] bg-cover bg-center pb-[24px] md:pb-[32px]"
         >
           <img
@@ -149,6 +189,7 @@ export default function Result() {
             alt="result"
             width={2400}
             height={598}
+            crossOrigin="anonymous"
             style={{ width: '100%', height: 'auto' }}
           />
           <div className="w-[343px] md:w-[530px] h-[228px] md:h-[351px] flex items-center justify-center gap-[8px] mt-[16px]">
@@ -168,6 +209,7 @@ export default function Result() {
                   objectFit: 'cover',
                   display: 'block',
                 }}
+                crossOrigin="anonymous"
               />
             )}
             <div className="w-[100%] h-[100%] flex flex-col gap-[8px]">
@@ -186,6 +228,7 @@ export default function Result() {
                       height: !hasMobile ? 171 : 110,
                       objectFit: 'cover',
                     }}
+                    crossOrigin="anonymous"
                   />
                   <img
                     src={
@@ -200,6 +243,7 @@ export default function Result() {
                       height: !hasMobile ? 171 : 110,
                       objectFit: 'cover',
                     }}
+                    crossOrigin="anonymous"
                   />
                 </>
               )}
@@ -308,26 +352,29 @@ export default function Result() {
           {hasMobile ? (
             <button
               onClick={async () => {
-                if (!shareImg) {
-                  Alert.show('分享失败, 请刷新重试。');
-                  return;
-                }
-
-                const blob = await (await fetch(shareImg)).blob();
-                const file = new File([blob], 'color-result.png', { type: 'image/png' });
-                navigator
-                  .share({
-                    title: 'Nippon',
-                    text: 'Nippon',
-                    files: [file],
-                    url: window.location.href,
-                  })
-                  .catch((error) => {
-                    // 用户取消分享时不显示错误提示
-                    if (error.name !== 'AbortError') {
-                      Alert.show('分享失败');
+                setIsLoading(true);
+                generateImage().then(async () => {
+                  generateImage().then(async (res) => {
+                    if (!res) {
+                      return;
                     }
+                    const blob = await (await fetch(res)).blob();
+                    const file = new File([blob], 'color-result.png', { type: 'image/png' });
+                    navigator
+                      .share({
+                        title: 'Nippon',
+                        text: 'Nippon',
+                        files: [file],
+                        url: window.location.href,
+                      })
+                      .catch((error) => {
+                        // 用户取消分享时不显示错误提示
+                        if (error.name !== 'AbortError') {
+                          Alert.show('分享失败');
+                        }
+                      });
                   });
+                });
               }}
               className="w-[343px] md:w-[400px] h-[44px] mt-[24px] flex items-center justify-center rounded-[25px] text-[14px] font-[700] text-[#FFFFFF] mb-[16px] transition-all duration-300
           bg-[#E30211]"
@@ -351,7 +398,7 @@ export default function Result() {
                   setIsCopied(true);
                   setTimeout(() => {
                     setIsCopied(false);
-                  }, 3000);
+                  }, 2000);
                 })
                 .catch(() => {
                   Alert.show('複製失敗');
@@ -383,8 +430,8 @@ export default function Result() {
               '/result_ads1.png'
             }
             alt="result"
-            width={1500}
-            height={703}
+            width={2400}
+            height={1125}
             style={{ width: '100%', height: 'auto' }}
           />
 
@@ -397,7 +444,8 @@ export default function Result() {
           />
           <div className="w-[100%] h-[76px] mt-[-5px] z-[1] pt-[10px] flex items-center justify-center bg-[#02274F]">
             <a
-              href="https://www.google.com"
+              href="https://www.nipponpaint.com.hk/news/news-023/?utm_source=PL&utm_medium=website&utm_campaign=COLORIDLAB
+"
               target="_blank"
               style={{
                 borderBottom: '3px solid #FFFFFF',
@@ -418,7 +466,7 @@ export default function Result() {
           />
           <div className="w-[100%] h-[76px] flex items-center justify-center">
             <a
-              href="https://www.google.com"
+              href="https://www.hktvmall.com/hktv/zh/search?q=%3A%3Acategory%3ADD00000085161%3AcategoryHotPickOrder%3ADD00000085161%3Astreet%3Amain&utm_source=PL&utm_medium=website&utm_campaign=COLORIDLAB"
               target="_blank"
               style={{
                 borderBottom: '3px solid #9EBF1A',
@@ -439,7 +487,7 @@ export default function Result() {
           />
           <div className="w-[100%] h-[76px] flex items-center justify-center">
             <a
-              href="https://www.google.com"
+              href="https://www.nipponpaint.com.hk/anti-formaldehyde-odour-less-kids-paint-series?utm_source=PL&utm_medium=website&utm_campaign=COLORIDLAB"
               target="_blank"
               style={{
                 borderBottom: '3px solid #32F1FF',
@@ -456,7 +504,7 @@ export default function Result() {
             alt="result"
             width={1500}
             height={329}
-            style={{ width: '100%', height: 'auto' }}
+            style={{ width: '100%', height: 'auto', marginTop: 16 }}
           />
         </div>
       </div>
