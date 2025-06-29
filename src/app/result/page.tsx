@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import Alert from '../../../components/Alert';
 import ConnectIcon from '../../../components/ConnectIcon';
-import { isMobile, isIOS } from 'react-device-detect';
+import { isMobile } from 'react-device-detect';
 import { toPng } from 'html-to-image';
 import { getGenerateInfo } from '../../../apis/business';
 import { adImgList, themeList } from './reducer';
@@ -33,27 +33,27 @@ export default function Result() {
 
     try {
       // 强制重新加载所有 <img>
-      const images = node.querySelectorAll('img');
-      await Promise.all(
-        Array.from(images).map((img) => {
-          return new Promise<void>((resolve) => {
-            img.crossOrigin = 'anonymous'; // 重要：设置 crossOrigin
-            const clone = new window.Image();
-            clone.crossOrigin = 'anonymous';
-            clone.src = img.src;
-            clone.onload = () => {
-              img.src = clone.src; // 强制刷新
-              resolve();
-            };
-            clone.onerror = () => resolve(); // 加载失败也不阻塞
-          });
-        }),
-      );
+      // const images = node.querySelectorAll('img');
+      // await Promise.all(
+      //   Array.from(images).map((img) => {
+      //     return new Promise<void>((resolve) => {
+      //       img.crossOrigin = 'anonymous'; // 重要：设置 crossOrigin
+      //       const clone = new window.Image();
+      //       clone.crossOrigin = 'anonymous';
+      //       clone.src = img.src;
+      //       clone.onload = () => {
+      //         img.src = clone.src; // 强制刷新
+      //         resolve();
+      //       };
+      //       clone.onerror = () => resolve(); // 加载失败也不阻塞
+      //     });
+      //   }),
+      // );
 
       // 等待 iOS 渲染恢复（双帧 + 延迟）
-      // await new Promise((r) =>
-      //   requestAnimationFrame(() => requestAnimationFrame(() => setTimeout(r, 100))),
-      // );
+      await new Promise((r) =>
+        requestAnimationFrame(() => requestAnimationFrame(() => setTimeout(r, 100))),
+      );
 
       // backgroundColor: '#ffffff',
       //   cacheBust: true,
@@ -62,7 +62,7 @@ export default function Result() {
       //     transform: 'scale(1)',
       //     transformOrigin: 'top left',
       //   },
-      await document.fonts.ready; // 等待所有字体加载完
+      // await document.fonts.ready; // 等待所有字体加载完
 
       const dataUrl = await toPng(node, {
         quality: 0.95,
@@ -152,11 +152,8 @@ export default function Result() {
     }
   }, [result, hasMobile]);
 
-  const [hasIOS, setHasIOS] = useState(false);
-
   useEffect(() => {
     setHasMobile(isMobile);
-    setHasIOS(isIOS);
     getResult();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -178,9 +175,8 @@ export default function Result() {
         <div
           ref={resultContainerRef}
           style={{
-            fontFamily: hasIOS
-              ? '-apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, Arial, sans-serif'
-              : 'Noto Sans TC, sans-serif',
+            fontFamily:
+              '-apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, Arial, sans-serif',
           }}
           className="w-[100%] flex flex-col items-center bg-[url('/result_share_bg.png')] bg-cover bg-center pb-[24px] md:pb-[32px]"
         >

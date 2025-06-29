@@ -55,7 +55,7 @@ export default function Loading() {
             clearInterval(timer.current);
             timer.current = null;
           }
-          // router.push('/result');
+          router.push('/result');
         }
       }
     }, 5000);

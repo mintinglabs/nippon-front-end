@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@100..900&display=swap');
+/* @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@100..900&display=swap'); */
 @import "tailwindcss";
 
 
@@ -25,7 +25,7 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: "Noto Sans TC", sans-serif;
+  /* font-family: "Noto Sans TC", sans-serif; */
   font-optical-sizing: auto;
 }
 
