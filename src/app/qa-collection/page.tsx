@@ -57,6 +57,11 @@ export default function QACollection() {
 
     if (currentStep < QNA.length && answer[currentStep - 1]) {
       setCurrentStep(currentStep + 1);
+      // 回到顶部
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth',
+      });
     }
     if (currentStep === QNA.length) {
       setIsLoading(true);

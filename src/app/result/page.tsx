@@ -25,55 +25,41 @@ export default function Result() {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [result, setResult] = useState<any>(null);
 
-  const generateImage = async () => {
+  const [hasRenderedOnce, setHasRenderedOnce] = useState(false);
+
+  const generateImage = async (useResult = true) => {
     const node = resultContainerRef.current;
     if (!node) return;
 
-    setIsLoading(true);
-
     try {
-      // 强制重新加载所有 <img>
-      // const images = node.querySelectorAll('img');
-      // await Promise.all(
-      //   Array.from(images).map((img) => {
-      //     return new Promise<void>((resolve) => {
-      //       img.crossOrigin = 'anonymous'; // 重要：设置 crossOrigin
-      //       const clone = new window.Image();
-      //       clone.crossOrigin = 'anonymous';
-      //       clone.src = img.src;
-      //       clone.onload = () => {
-      //         img.src = clone.src; // 强制刷新
-      //         resolve();
-      //       };
-      //       clone.onerror = () => resolve(); // 加载失败也不阻塞
-      //     });
-      //   }),
-      // );
-
-      // 等待 iOS 渲染恢复（双帧 + 延迟）
-      await new Promise((r) =>
-        requestAnimationFrame(() => requestAnimationFrame(() => setTimeout(r, 100))),
+      // 图片加载...
+      await Promise.all(
+        Array.from(node.querySelectorAll('img')).map((img) => {
+          if (img.complete) return Promise.resolve();
+          return new Promise((resolve) => {
+            img.onload = img.onerror = resolve;
+          });
+        }),
       );
-
-      // backgroundColor: '#ffffff',
-      //   cacheBust: true,
-      //   skipAutoScale: true,
-      //   style: {
-      //     transform: 'scale(1)',
-      //     transformOrigin: 'top left',
-      //   },
-      // await document.fonts.ready; // 等待所有字体加载完
+      if (document.fonts?.ready) await document.fonts.ready;
+      node.getBoundingClientRect();
+      await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
 
       const dataUrl = await toPng(node, {
         quality: 0.95,
         pixelRatio: 2,
+        cacheBust: true,
       });
 
-      setShareImg(dataUrl);
+      if (useResult) {
+        setShareImg(dataUrl);
+      } else {
+        setHasRenderedOnce(true);
+      }
+
       return dataUrl;
-    } catch (error) {
-      console.error('生成图片失败:', error);
-      Alert.show('生成圖片失敗，請重試');
+    } catch (err) {
+      console.error('toPng fail', err);
     } finally {
       setIsLoading(false);
     }
@@ -108,8 +94,9 @@ export default function Result() {
   };
 
   useEffect(() => {
-    if (result && !hasMobile) {
+    if (result && !hasRenderedOnce) {
       setIsLoading(true);
+      generateImage(false);
       // 等待所有图片加载完成后再生成图片
       const waitForImagesToLoad = () => {
         const node = resultContainerRef.current;
@@ -150,7 +137,7 @@ export default function Result() {
       // 使用 setTimeout 确保 DOM 已经渲染
       setTimeout(waitForImagesToLoad, 100);
     }
-  }, [result, hasMobile]);
+  }, [result, hasMobile, hasRenderedOnce]);
 
   useEffect(() => {
     setHasMobile(isMobile);
@@ -158,7 +145,7 @@ export default function Result() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (
-    <div className="bg-[url('/desktop_bg.png')] bg-cover bg-center flex flex-col items-center">
+    <div className="bg-[url('/desktop_bg.png')] overflow-x-hidden bg-cover bg-center flex flex-col items-center">
       <div className="w-[100%] md:w-[600px] bg-[#fff] flex flex-col items-center">
         {shareImg && !hasMobile && (
           <div className="w-[100%] md:w-[600px] flex flex-col items-center bg-[#fff] absolute top-0 left-[50%] translate-x-[-50%]">

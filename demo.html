@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+
+<head>
+  <meta charset="UTF-8">
+  <title>html-to-image toPng Demo</title>
+  <script src="https://unpkg.com/html-to-image"></script>
+  <style>
+    #capture-area {
+      width: 400px;
+      padding: 16px;
+      border: 1px solid #ccc;
+      background: #fff;
+      margin-bottom: 16px;
+    }
+
+    #capture-area img {
+      max-width: 100%;
+      display: block;
+      margin-bottom: 8px;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="capture-area">
+    <div>本地图片：</div>
+    <img src="/public/desktop_bg.png" alt="本地图片" id="local-img" />
+    <div>网络图片：</div>
+    <img src="https://storage.medialens.io/nippon_paint_video/17509204628993131/fullPic.jpg" alt="网络图片" id="remote-img"
+      crossorigin="anonymous" />
+    <div>测试文字</div>
+  </div>
+  <button id="btn">截图并显示</button>
+  <div>
+    <h3>截图结果：</h3>
+    <img id="result-img" />
+  </div>
+  <script>
+    document.getElementById('btn').onclick = async function () {
+      const node = document.getElementById('capture-area');
+      // 等待图片加载
+      const imgs = node.querySelectorAll('img');
+      await Promise.all(Array.from(imgs).map(img => {
+        if (img.complete) return Promise.resolve();
+        return new Promise(resolve => {
+          img.onload = img.onerror = resolve;
+        });
+      }));
+      // 等两帧，确保 iOS 也渲染
+      await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+      // 截图
+      window.htmlToImage.toPng(node, { cacheBust: true })
+        .then(function (dataUrl) {
+          document.getElementById('result-img').src = dataUrl;
+        })
+        .catch(function (error) {
+          alert('截图失败: ' + error);
+        });
+    }
+  </script>
+</body>
+
+</html>

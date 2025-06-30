@@ -4,6 +4,7 @@ import './globals.css';
 import { Suspense } from 'react';
 import FullSpin from '../../components/FullSpin';
 import Script from 'next/script';
+import '@fontsource/noto-sans-tc/400.css';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
