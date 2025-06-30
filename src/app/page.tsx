@@ -274,14 +274,6 @@ export default function Home() {
           className="flex w-[375px] h-[510px] md:w-[800px] md:h-[1038px] flex-col relative items-center justify-center md:bg-[#0C274C]"
         >
           <Image
-            src="/nippon_logo.png"
-            alt="logo"
-            width={843}
-            height={237}
-            className="absolute top-[28px] left-[50%] translate-x-[-50%] right-0 bottom-0"
-            style={{ width: hasMobile ? 120 : 210, height: 'auto' }}
-          />
-          <Image
             src="/home_bg_low.gif"
             alt="logo"
             width={1499}

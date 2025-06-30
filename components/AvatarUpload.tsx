@@ -31,6 +31,30 @@ export const AvatarUpload: React.FC<{
       return Upload.LIST_IGNORE; // 阻止上传
     }
 
+    // 检查图片比例是否为 9:16
+    // const checkImageRatio = (file: File): Promise<boolean> => {
+    //   return new Promise((resolve) => {
+    //     const img = new Image();
+    //     img.onload = () => {
+    //       const ratio = img.width / img.height;
+    //       const targetRatio = 9 / 16; // 9:16 比例
+    //       const tolerance = 0.1; // 允许 10% 的误差
+    //       const isValidRatio = Math.abs(ratio - targetRatio) <= tolerance;
+    //       resolve(isValidRatio);
+    //     };
+    //     img.onerror = () => {
+    //       resolve(false);
+    //     };
+    //     img.src = URL.createObjectURL(file);
+    //   });
+    // };
+
+    // const isValidRatio = await checkImageRatio(file);
+    // if (!isValidRatio) {
+    //   Alert.show('請上傳 9:16 比例的圖片');
+    //   return Upload.LIST_IGNORE;
+    // }
+
     try {
       setIsUploading(true);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
