@@ -75,7 +75,7 @@ input:focus {
 .bg-scroll-y-desktop {
   background-size: cover;
   background-repeat: repeat-y;
-  animation: bg-scroll-y-desktop 20s linear infinite;
+  animation: bg-scroll-y-desktop 50s linear infinite;
 }
 
 /* 外部loading 加载样式 */

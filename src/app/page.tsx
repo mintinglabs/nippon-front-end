@@ -1,5 +1,4 @@
 'use client';
-
 import Image from 'next/image';
 import Checkbox from '../../components/Checkbox';
 import { useEffect, useState } from 'react';

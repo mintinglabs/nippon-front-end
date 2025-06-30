@@ -1,9 +1,11 @@
+'use client';
 import { Popover, Upload } from 'antd';
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { isIOS, isMobile } from 'react-device-detect';
 import { CameraOutlined, FolderOpenOutlined } from '@ant-design/icons';
 import Alert from './Alert';
 import { uploadPortrait } from '../apis/business';
+// import Cropper from 'react-easy-crop';
 
 export const AvatarUpload: React.FC<{
   children: React.ReactNode;
@@ -11,55 +13,56 @@ export const AvatarUpload: React.FC<{
   setIsUploading: (isUploading: boolean) => void;
 }> = ({ children, onUploadSuccess, setIsUploading }) => {
   const [openFilePicker, setOpenFilePicker] = useState(false);
+  const [isClient, setIsClient] = useState(false);
+  // const [isModalOpen, setIsModalOpen] = useState(false);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const uploadRef = useRef<any>(null);
   const cameraInputRef = useRef<HTMLInputElement>(null);
   const albumInputRef = useRef<HTMLInputElement>(null);
 
+  // 确保只在客户端运行
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
   const handleCameraInputChange = async (file: File) => {
+    let newFile: File = file;
+
+    // 动态导入 heic2any，避免 SSR 问题
+    if (file.type === 'image/heic') {
+      try {
+        const heic2any = (await import('heic2any')).default;
+        const blob = await heic2any({
+          blob: file,
+          toType: 'image/png',
+          quality: 0.9,
+        });
+        newFile = new File([blob as Blob], `${new Date().getTime()}.png`, { type: 'image/png' });
+      } catch (error) {
+        console.error('HEIC conversion failed:', error);
+        Alert.show('HEIC 格式轉換失敗，請使用其他格式');
+        return Upload.LIST_IGNORE;
+      }
+    }
+
     // 判断格式，只能是jpeg, png, heic, webp
     if (!['image/jpeg', 'image/png', 'image/heic', 'image/webp'].includes(file.type)) {
       Alert.show('請檢查相片格式');
       return Upload.LIST_IGNORE;
     }
 
-    if (file.size > 5 * 1024 * 1024) {
+    if (newFile.size > 5 * 1024 * 1024) {
       // 这里可以用 antd 的 message.error 或 alert
-      console.log('file.size', file.size);
       Alert.show('請上傳 5MB 以下的 JPEG, PNG, HEIC 或 WebP 圖檔');
       return Upload.LIST_IGNORE; // 阻止上传
     }
-
-    // 检查图片比例是否为 9:16
-    // const checkImageRatio = (file: File): Promise<boolean> => {
-    //   return new Promise((resolve) => {
-    //     const img = new Image();
-    //     img.onload = () => {
-    //       const ratio = img.width / img.height;
-    //       const targetRatio = 9 / 16; // 9:16 比例
-    //       const tolerance = 0.1; // 允许 10% 的误差
-    //       const isValidRatio = Math.abs(ratio - targetRatio) <= tolerance;
-    //       resolve(isValidRatio);
-    //     };
-    //     img.onerror = () => {
-    //       resolve(false);
-    //     };
-    //     img.src = URL.createObjectURL(file);
-    //   });
-    // };
-
-    // const isValidRatio = await checkImageRatio(file);
-    // if (!isValidRatio) {
-    //   Alert.show('請上傳 9:16 比例的圖片');
-    //   return Upload.LIST_IGNORE;
-    // }
-
+    // setIsModalOpen(true);
     try {
       setIsUploading(true);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const res: any = await uploadPortrait({
-        file,
+        file: newFile,
         pageId: '1064650320242859',
       });
       if (res.code !== 200) {
@@ -93,6 +96,12 @@ export const AvatarUpload: React.FC<{
     //     setUploading(false);
     //   });
   };
+
+  // 如果还没到客户端，显示加载状态
+  if (!isClient) {
+    return <div>{children}</div>;
+  }
+
   return (
     <>
       <Upload
@@ -181,6 +190,20 @@ export const AvatarUpload: React.FC<{
           }
         }}
       />
+
+      {/* <Modal
+        open={isModalOpen}
+        onCancel={() => setIsModalOpen(false)}
+        width={800}
+        style={{ height: 548 }}
+        footer={null}
+        closable={true}
+        maskClosable={true}
+      >
+        <div style={{ padding: '20px 0' }}>
+        <Cropper image={formData.image} aspect={4 / 3} crop={crop} onCropChange={setCrop} />
+        </div>
+      </Modal> */}
     </>
   );
 };
