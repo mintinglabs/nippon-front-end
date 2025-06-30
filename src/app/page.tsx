@@ -279,7 +279,7 @@ export default function Home() {
             width={455}
             height={128}
             className="absolute top-[28px] left-[50%] translate-x-[-50%] right-0 bottom-0"
-            style={{ width: 210, height: 'auto' }}
+            style={{ width: hasMobile ? 120 : 210, height: 'auto' }}
           />
           <Image
             src="/home_bg_low.gif"
@@ -287,6 +287,7 @@ export default function Home() {
             width={1499}
             height={1152}
             style={{ width: hasMobile ? '375px' : '800px', height: '100%' }}
+            unoptimized
           />
           <Image
             src="/home_bg_low.png"

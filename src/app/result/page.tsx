@@ -117,7 +117,9 @@ export default function Result() {
           if (loadedCount === totalImages) {
             // 所有图片都加载完成，生成分享图片
             setTimeout(() => {
-              generateImage();
+              generateImage().then(() => {
+                generateImage();
+              });
             }, 500); // 稍微延迟一下确保渲染完成
           }
         };
