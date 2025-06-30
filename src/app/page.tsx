@@ -276,8 +276,8 @@ export default function Home() {
           <Image
             src="/nippon_logo.png"
             alt="logo"
-            width={455}
-            height={128}
+            width={843}
+            height={237}
             className="absolute top-[28px] left-[50%] translate-x-[-50%] right-0 bottom-0"
             style={{ width: hasMobile ? 120 : 210, height: 'auto' }}
           />
