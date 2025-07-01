@@ -365,7 +365,7 @@ export const AvatarUpload: React.FC<{
                   放大／縮小
                   <Slider
                     tooltip={{ open: false }}
-                    defaultValue={1}
+                    value={scale}
                     min={1}
                     max={3}
                     step={0.1}
@@ -448,7 +448,7 @@ export const AvatarUpload: React.FC<{
                   放大／縮小
                   <Slider
                     tooltip={{ open: false }}
-                    defaultValue={1}
+                    value={scale}
                     min={1}
                     max={3}
                     step={0.1}

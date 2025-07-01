@@ -18,7 +18,6 @@ export default function Result() {
   const resultContainerRef = useRef<HTMLDivElement>(null);
   const [isCopied, setIsCopied] = useState(false);
   const [hasMobile, setHasMobile] = useState(false);
-  const [hasIOS, setHasIOS] = useState(false);
 
   const [shareImg, setShareImg] = useState<string>('');
 
@@ -100,17 +99,17 @@ export default function Result() {
   };
 
   useEffect(() => {
-    if (result && !hasIOS) {
+    if (result && !isIOS) {
       generateImageLoacl();
-    } else {
+    } else if (result && isIOS) {
       getShareImg();
     }
-  }, [result, hasIOS]);
+  }, [result]);
 
   useEffect(() => {
     setHasMobile(isMobile);
-    setHasIOS(isIOS);
     getResult();
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -360,7 +359,7 @@ export default function Result() {
             onClick={() => {
               router.push('/');
             }}
-            className={`w-[400px] h-[44px] flex items-center justify-center gap-[8px] rounded-[25px] text-[15px] font-[700] text-[#002859] mb-[24px] transition-all duration-300
+            className={`w-[400px] h-[44px] cursor-pointer flex items-center justify-center gap-[8px] rounded-[25px] text-[15px] font-[700] text-[#002859] mb-[24px] transition-all duration-300
           `}
           >
             再玩一次
