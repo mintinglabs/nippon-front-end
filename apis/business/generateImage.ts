@@ -8,6 +8,7 @@ export default async function generateImage(uuid: string) {
     method: 'POST',
     body: JSON.stringify({
       url: `https://www.nipponpaint-color-id.com.hk/share?uuid=${uuid}`,
+      uuid,
     }),
   });
 

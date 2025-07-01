@@ -147,13 +147,13 @@ export default function Result() {
           <div className="w-[343px] md:w-[530px] tracking-[4px] text-center text-[28px] font-[900] mt-[16px] text-[#143784]">
             {themeList[result?.reportStyle?.style?.colorKey as keyof typeof themeList]?.title ||
               '明亮簡約風'}
-            <div
-              className="w-[100%] h-[3px] mt-[8px]"
-              style={{
-                background:
-                  'linear-gradient(90deg, #D8F2FF 0%, #00FFFF 20%, #09F9FE 21%, #23ECFD 22%, #4DD6FB 24%, #88B7F9 26%, #D190F6 28%, #FA7BF5 29%, #F685F5 30%, #EBA6F8 35%, #E2C1FA 41%, #DAD5FC 47%, #D5E4FE 54%, #D2EDFE 62%, #D2F0FF 75%, #008DFF 90%, #55B9FF 94%, #D8F2FF 100%)',
-              }}
-            ></div>
+            <Image
+              width={1400}
+              height={19}
+              src="/border.png"
+              alt="border"
+              className="w-[100%] h-[4px] mt-[8px]"
+            />
           </div>
           <div className="w-[343px] md:w-[530px] text-center mt-[16px]">
             <span className="text-[16px] font-[700] text-[#143784]">
@@ -163,7 +163,7 @@ export default function Result() {
               <Image
                 width={528}
                 height={528}
-                src={`/color/${result?.reportStyle?.colors[0]?.id}-528.png`}
+                src={`/color/${result?.reportStyle?.colors[0]?.id || 'BN7651-4'}-528.png`}
                 alt="result"
                 className="w-[171px] md:text-[28px] object-cover text-[20px] text-[#000000] md:w-[263px] h-[171px] md:h-[263px] text-left flex items-end font-[700] "
               />
@@ -175,7 +175,7 @@ export default function Result() {
                 <Image
                   width={257}
                   height={257}
-                  src={`/color/${result?.reportStyle?.colors[1]?.id}.png`}
+                  src={`/color/${result?.reportStyle?.colors[1]?.id || 'BA7400-1'}.png`}
                   alt="result"
                   className="w-[81px] text-[12px] object-cover md:text-[18px] md:w-[127px] h-[81px] md:h-[127px] text-left flex items-end"
                 />
@@ -183,7 +183,7 @@ export default function Result() {
                 <Image
                   width={257}
                   height={257}
-                  src={`/color/${result?.reportStyle?.colors[3]?.id}.png`}
+                  src={`/color/${result?.reportStyle?.colors[3]?.id || 'BA7400-1'}.png`}
                   alt="result"
                   className="w-[81px] text-[12px] object-cover md:text-[18px] md:w-[127px] h-[81px] md:h-[127px] text-left flex items-end"
                 />
@@ -192,14 +192,14 @@ export default function Result() {
                 <Image
                   width={257}
                   height={257}
-                  src={`/color/${result?.reportStyle?.colors[2]?.id}.png`}
+                  src={`/color/${result?.reportStyle?.colors[2]?.id || 'BA7400-1'}.png`}
                   alt="result"
                   className="w-[81px] text-[12px] object-cover md:text-[18px] md:w-[127px] h-[81px] md:h-[127px] text-left flex items-end"
                 />
                 <Image
                   width={257}
                   height={257}
-                  src={`/color/${result?.reportStyle?.colors[4]?.id}.png`}
+                  src={`/color/${result?.reportStyle?.colors[4]?.id || 'BA7400-1'}.png`}
                   alt="result"
                   className="w-[81px] text-[12px] object-cover md:text-[18px] md:w-[127px] h-[81px] md:h-[127px] text-left flex items-end"
                 />
