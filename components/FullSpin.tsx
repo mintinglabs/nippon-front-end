@@ -30,7 +30,7 @@ const InternalFullSpin = React.forwardRef<HTMLDivElement, FullSpinProps>(
           <div className="fixed inset-0 bg-[#00000080] flex justify-center items-center z-[1000]">
             <div className="w-[150px] h-[130px] bg-white rounded-[16px] flex justify-center items-center flex-col gap-[16px]">
               <Spin
-                indicator={<LoadingOutlined style={{ color: '#FF00A3', fontSize: 40 }} spin />}
+                indicator={<LoadingOutlined style={{ color: '#FF7CFF', fontSize: 40 }} spin />}
                 size="large"
               />
               {text}

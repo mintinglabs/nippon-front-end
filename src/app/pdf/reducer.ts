@@ -32,7 +32,7 @@ export const themeList = {
 };
 
 export const adImgList = {
-  xwz: '/ads_1_1.png',
-  ylz: '/ads_1_2.png',
-  xyp: '/ads_1_3.png',
+  xwz: 'https://storage.googleapis.com/assets-presslogic/nippon/color-front-static/ads_1_1x2.png',
+  ylz: 'https://storage.googleapis.com/assets-presslogic/nippon/color-front-static/ads_1_1x2.png',
+  xyp: 'https://storage.googleapis.com/assets-presslogic/nippon/color-front-static/ads_1_3x2.png',
 };

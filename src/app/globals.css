@@ -1,4 +1,4 @@
-/* @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@100..900&display=swap'); */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@100..900&display=swap');
 @import "tailwindcss";
 
 
@@ -34,32 +34,7 @@ input:focus {
   border: 0 !important;
 }
 
-@keyframes bg-scroll-x {
-  0% {
-    background-position: 0 4000px;
-    ;
-  }
 
-  100% {
-    background-position: 0 0;
-  }
-}
-
-.bg-scroll-x {
-  background-size: cover;
-  background-repeat: repeat-y;
-  animation: bg-scroll-x 20s linear infinite;
-}
-
-@keyframes bg-scroll-y {
-  0% {
-    background-position: 0 980px;
-  }
-
-  100% {
-    background-position: 0 0;
-  }
-}
 
 @keyframes bg-scroll-y-desktop {
   0% {
@@ -76,6 +51,10 @@ input:focus {
   background-size: cover;
   background-repeat: repeat-y;
   animation: bg-scroll-y-desktop 50s linear infinite;
+
+  @media (max-width: 768px) {
+    animation: bg-scroll-y-desktop 60s linear infinite;
+  }
 }
 
 /* 外部loading 加载样式 */

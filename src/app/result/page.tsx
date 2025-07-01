@@ -6,17 +6,19 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import Alert from '../../../components/Alert';
 import ConnectIcon from '../../../components/ConnectIcon';
-import { isMobile } from 'react-device-detect';
-import { toPng } from 'html-to-image';
+import { isMobile, isIOS } from 'react-device-detect';
 import { getGenerateInfo } from '../../../apis/business';
 import { adImgList, themeList } from './reducer';
 import FullSpin from '../../../components/FullSpin';
+import generateImage from '../../../apis/business/generateImage';
+import { toPng } from 'html-to-image';
 
 export default function Result() {
   const router = useRouter();
   const resultContainerRef = useRef<HTMLDivElement>(null);
   const [isCopied, setIsCopied] = useState(false);
   const [hasMobile, setHasMobile] = useState(false);
+  const [hasIOS, setHasIOS] = useState(false);
 
   const [shareImg, setShareImg] = useState<string>('');
 
@@ -25,41 +27,26 @@ export default function Result() {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [result, setResult] = useState<any>(null);
 
-  const [hasRenderedOnce, setHasRenderedOnce] = useState(false);
-
-  const generateImage = async (useResult = true) => {
-    const node = resultContainerRef.current;
-    if (!node) return;
-
+  const getShareImg = async () => {
+    if (localStorage.getItem('shareImg')) {
+      setShareImg(localStorage.getItem('shareImg') || '');
+      return localStorage.getItem('shareImg');
+    }
+    setIsLoading(true);
     try {
-      // 图片加载...
-      await Promise.all(
-        Array.from(node.querySelectorAll('img')).map((img) => {
-          if (img.complete) return Promise.resolve();
-          return new Promise((resolve) => {
-            img.onload = img.onerror = resolve;
-          });
-        }),
-      );
-      if (document.fonts?.ready) await document.fonts.ready;
-      node.getBoundingClientRect();
-      await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
-
-      const dataUrl = await toPng(node, {
-        quality: 0.95,
-        pixelRatio: 2,
-        cacheBust: true,
-      });
-
-      if (useResult) {
-        setShareImg(dataUrl);
-      } else {
-        setHasRenderedOnce(true);
+      const uuid = localStorage.getItem('uuid');
+      if (uuid) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const res: any = await generateImage(uuid);
+        if (res.message === 'OK') {
+          setShareImg(res.data);
+          localStorage.setItem('shareImg', res.data);
+        }
+        return res.data;
       }
-
-      return dataUrl;
-    } catch (err) {
-      console.error('toPng fail', err);
+    } catch (error) {
+      console.log(error);
+      Alert.show('生成分享圖片失败' + error);
     } finally {
       setIsLoading(false);
     }
@@ -93,61 +80,59 @@ export default function Result() {
     }
   };
 
-  useEffect(() => {
-    if (result && !hasRenderedOnce) {
-      setIsLoading(true);
-      generateImage(false);
-      // 等待所有图片加载完成后再生成图片
-      const waitForImagesToLoad = () => {
-        const node = resultContainerRef.current;
-        if (!node) return;
+  const generateImageLoacl = async () => {
+    setIsLoading(true);
+    const node = resultContainerRef.current;
+    if (!node) return;
 
-        const images = node.querySelectorAll('img');
-        if (images.length === 0) {
-          // 如果没有图片，直接生成
-          generateImage();
-          return;
-        }
-
-        let loadedCount = 0;
-        const totalImages = images.length;
-
-        const checkAllImagesLoaded = () => {
-          loadedCount++;
-          if (loadedCount === totalImages) {
-            // 所有图片都加载完成，生成分享图片
-            setTimeout(() => {
-              generateImage().then(() => {
-                generateImage();
-              });
-            }, 500); // 稍微延迟一下确保渲染完成
-          }
-        };
-
-        images.forEach((img) => {
-          if (img.complete) {
-            // 图片已经加载完成
-            checkAllImagesLoaded();
-          } else {
-            // 监听图片加载事件
-            img.addEventListener('load', checkAllImagesLoaded);
-            img.addEventListener('error', checkAllImagesLoaded); // 即使加载失败也继续
-          }
-        });
-      };
-
-      // 使用 setTimeout 确保 DOM 已经渲染
-      setTimeout(waitForImagesToLoad, 100);
+    try {
+      const dataUrl = await toPng(node, {
+        quality: 0.5,
+        pixelRatio: 2,
+        cacheBust: true,
+      });
+      setShareImg(dataUrl);
+    } catch (err) {
+      console.error('toPng fail', err);
+    } finally {
+      setIsLoading(false);
     }
-  }, [result, hasMobile, hasRenderedOnce]);
+  };
+
+  useEffect(() => {
+    if (result && !hasIOS) {
+      generateImageLoacl();
+    } else {
+      getShareImg();
+    }
+  }, [result, hasIOS]);
 
   useEffect(() => {
     setHasMobile(isMobile);
+    setHasIOS(isIOS);
     getResult();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const handleShare = async (url: string) => {
+    const blob = await (await fetch(url)).blob();
+    const file = new File([blob], 'color-result.png', { type: 'image/png' });
+    navigator
+      .share({
+        title: 'Nippon',
+        text: 'Nippon',
+        files: [file],
+        url: window.location.href,
+      })
+      .catch((error) => {
+        // 用户取消分享时不显示错误提示
+        if (error.name !== 'AbortError') {
+          Alert.show('分享失败' + error, 30000);
+        }
+      });
+  };
   return (
-    <div className="bg-[url('/desktop_bg.png')] overflow-x-hidden bg-cover bg-center flex flex-col items-center">
+    <div className="bg-[url('https://storage.googleapis.com/assets-presslogic/nippon/color-front-static/desktop_bg.png')] overflow-x-hidden bg-cover bg-center flex flex-col items-center">
       <div className="w-[100%] md:w-[600px] bg-[#fff] flex flex-col items-center">
         {shareImg && !hasMobile && (
           <div className="w-[100%] md:w-[600px] flex flex-col items-center bg-[#fff] absolute top-0 left-[50%] translate-x-[-50%]">
@@ -163,14 +148,10 @@ export default function Result() {
 
         <div
           ref={resultContainerRef}
-          style={{
-            fontFamily:
-              '-apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, Arial, sans-serif',
-          }}
-          className="w-[100%] flex flex-col items-center bg-[url('/result_share_bg.png')] bg-cover bg-center pb-[24px] md:pb-[32px]"
+          className="w-[100%] flex flex-col items-center bg-[url('https://storage.googleapis.com/assets-presslogic/nippon/color-front-static/result_share_bg.png')] bg-cover bg-center pb-[24px] md:pb-[32px]"
         >
           <img
-            src="/result_top_bg.png"
+            src="https://storage.googleapis.com/assets-presslogic/nippon/color-front-static/result_top_bg.png"
             alt="result"
             width={2400}
             height={598}
@@ -328,7 +309,7 @@ export default function Result() {
 
         <div className="w-[100%] flex flex-col items-center">
           <Image
-            src="/ni-color-id.png"
+            src="https://storage.googleapis.com/assets-presslogic/nippon/color-front-static/ni-color-id.png"
             alt="result"
             width={1500}
             height={184}
@@ -337,29 +318,7 @@ export default function Result() {
           {hasMobile ? (
             <button
               onClick={async () => {
-                setIsLoading(true);
-                generateImage().then(async () => {
-                  generateImage().then(async (res) => {
-                    if (!res) {
-                      return;
-                    }
-                    const blob = await (await fetch(res)).blob();
-                    const file = new File([blob], 'color-result.png', { type: 'image/png' });
-                    navigator
-                      .share({
-                        title: 'Nippon',
-                        text: 'Nippon',
-                        files: [file],
-                        url: window.location.href,
-                      })
-                      .catch((error) => {
-                        // 用户取消分享时不显示错误提示
-                        if (error.name !== 'AbortError') {
-                          Alert.show('分享失败');
-                        }
-                      });
-                  });
-                });
+                handleShare(shareImg);
               }}
               className="w-[343px] md:w-[400px] h-[44px] mt-[24px] flex items-center justify-center rounded-[25px] text-[14px] font-[700] text-[#FFFFFF] mb-[16px] transition-all duration-300
           bg-[#E30211]"
@@ -412,7 +371,7 @@ export default function Result() {
           <Image
             src={
               adImgList[result?.reportStyle?.style?.code as keyof typeof adImgList] ||
-              '/result_ads1.png'
+              'https://storage.googleapis.com/assets-presslogic/nippon/color-front-static/result_ads1.png'
             }
             alt="result"
             width={2400}
@@ -421,7 +380,7 @@ export default function Result() {
           />
 
           <Image
-            src="/result_ads3.png"
+            src="https://storage.googleapis.com/assets-presslogic/nippon/color-front-static/result_ads3.png"
             alt="result"
             width={1500}
             height={1150}
@@ -443,7 +402,7 @@ export default function Result() {
             </a>
           </div>
           <Image
-            src="/result_ads4.png"
+            src="https://storage.googleapis.com/assets-presslogic/nippon/color-front-static/result_ads4.png"
             alt="result"
             width={1500}
             height={978}
@@ -464,7 +423,7 @@ export default function Result() {
             </a>
           </div>
           <Image
-            src="/result_ads5.png"
+            src="https://storage.googleapis.com/assets-presslogic/nippon/color-front-static/result_ads5.png"
             alt="result"
             width={1500}
             height={118}
@@ -485,7 +444,7 @@ export default function Result() {
             </a>
           </div>
           <Image
-            src="/result_ads6.png"
+            src="https://storage.googleapis.com/assets-presslogic/nippon/color-front-static/result_ads6.png"
             alt="result"
             width={1500}
             height={329}

@@ -1,4 +1,5 @@
 'use client';
+import '@ant-design/v5-patch-for-react-19';
 import Image from 'next/image';
 import Checkbox from '../../components/Checkbox';
 import { useEffect, useState } from 'react';
@@ -160,7 +161,7 @@ export default function Home() {
               />
             </div>
           ) : (
-            <div className="w-[116px] h-[116px] mt-[16px] flex items-center justify-center">
+            <div className="w-[116px] h-[auto] flex items-center justify-center">
               <AvatarUpload
                 onUploadSuccess={(url: string) => {
                   setFormData({
@@ -255,7 +256,7 @@ export default function Home() {
 
   return (
     <>
-      <div className="md:flex flex-col items-center md:bg-[url('/desktop_bg.png')] bg-cover bg-center">
+      <div className="md:flex flex-col items-center md:bg-[url('https://storage.googleapis.com/assets-presslogic/nippon/color-front-static/desktop_bg.png')] bg-cover bg-center">
         <header
           className={`
           w-full z-10 flex justify-center items-center fixed top-0 left-0 right-0 bg-[#fff] p-[12px]
@@ -263,7 +264,12 @@ export default function Home() {
           ${isHeaderVisible ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0'}
         `}
         >
-          <Image src="/nippon_logo_dark.png" alt="logo" width={114} height={32} />
+          <Image
+            src="https://storage.googleapis.com/assets-presslogic/nippon/color-front-static/nippon_logo_dark.png"
+            alt="logo"
+            width={114}
+            height={32}
+          />
         </header>
 
         <div
@@ -281,7 +287,7 @@ export default function Home() {
             unoptimized
           />
           <Image
-            src="/home_bg_low.png"
+            src="https://storage.googleapis.com/assets-presslogic/nippon/color-front-static/home_bg_low.png"
             alt="logo"
             width={1499}
             height={1152}
@@ -357,8 +363,8 @@ export default function Home() {
           </div>
         </div>
         <div className="md:w-[800px] md:bg-[#0C274C]">
-          <div className="md:w-[800px] h-[103px] md:h-[224px] bg-[url('/footer-bg.png')]  bg-cover bg-center" />
-          <div className="md:w-[800px] h-[68px] md:h-[145px] bg-[url('/nippon-ad.png')]  bg-cover bg-center" />
+          <div className="md:w-[800px] h-[103px] md:h-[224px] bg-[url('https://storage.googleapis.com/assets-presslogic/nippon/color-front-static/footer-bg.png')]  bg-cover bg-center" />
+          <div className="md:w-[800px] h-[68px] md:h-[145px] bg-[url('https://storage.googleapis.com/assets-presslogic/nippon/color-front-static/nippon-ad.png')]  bg-cover bg-center" />
         </div>
       </div>
       <Alert.Container />

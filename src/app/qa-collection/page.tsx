@@ -97,12 +97,12 @@ export default function QACollection() {
   };
 
   return (
-    <div className="md:flex md:min-h-[100vh] flex-col items-center md:bg-[url('/desktop_bg.png')] bg-cover bg-center">
+    <div className="md:flex md:min-h-[100vh] flex-col items-center md:bg-[url('https://storage.googleapis.com/assets-presslogic/nippon/color-front-static/desktop_bg.png')] bg-cover bg-center">
       <div className="w-[100%] flex-1 p-[16px] md:p-[32px] pb-[0] md:w-[800px] bg-[#002859] pt-[16px] flex flex-col items-center justify-center">
         <div
           className="w-[100%] flex-1 bg-scroll-y-desktop"
           style={{
-            backgroundImage: `url("/collection_bg${currentStep}.png")`,
+            backgroundImage: `url("https://storage.googleapis.com/assets-presslogic/nippon/color-front-static/collection_bg${currentStep}.png")`,
           }}
         >
           <header
@@ -123,7 +123,12 @@ export default function QACollection() {
             </div>
           </header>
           <div className="relative flex items-start justify-center bg-cover bg-center pt-[5px]">
-            <Image src="/nippon_logo.png" alt="logo" width={114} height={32} />
+            <Image
+              src="https://storage.googleapis.com/assets-presslogic/nippon/color-front-static/nippon_logo.png"
+              alt="logo"
+              width={114}
+              height={32}
+            />
           </div>
           <div className="relative h-[48px] flex gap-[20px] mt-[24px] items-center justify-center">
             <div
@@ -150,7 +155,11 @@ export default function QACollection() {
                     ...(answer[currentStep - 1] !== String.fromCharCode(65 + index) &&
                     isHover !== index
                       ? { backgroundImage: `url(${option.background})` }
-                      : { backgroundImage: 'url("/a_select_bg.png")', color: '#fff' }),
+                      : {
+                          backgroundImage:
+                            'url("https://storage.googleapis.com/assets-presslogic/nippon/color-front-static/a_select_bg.png")',
+                          color: '#fff',
+                        }),
                     backgroundSize: 'cover',
                     animationDelay: `${index * 0.2}s`,
                   }}
@@ -180,7 +189,7 @@ export default function QACollection() {
           </div>
         </div>
       </div>
-      <div className="w-[100%] md:w-[800px] h-[68px] md:h-[145px] bg-[url('/nippon-ad.png')]  bg-cover bg-center" />
+      <div className="w-[100%] md:w-[800px] h-[68px] md:h-[145px] bg-[url('https://storage.googleapis.com/assets-presslogic/nippon/color-front-static/nippon-ad.png')]  bg-cover bg-center" />
       <Alert.Container />
     </div>
   );

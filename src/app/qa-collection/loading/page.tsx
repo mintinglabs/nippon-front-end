@@ -21,8 +21,17 @@ export default function Loading() {
     if (imgRef.current) {
       setMaskHeight(imgRef.current.height / (hasMobile ? 2.25 : 2.2) + 'px');
       // imgRef 距离底部的距离
-      const maskBottomHeight = window.innerHeight - imgRef.current.getBoundingClientRect().bottom;
-      setMaskBottomHeight(maskBottomHeight + 142);
+      // 监听窗口高度变化，如果高度变化，则重新计算 maskBottomHeight
+      // 首次渲染也需要计算一次
+      const handleResize = () => {
+        if (!imgRef.current) return;
+        const maskBottomHeight = window.innerHeight - imgRef.current.getBoundingClientRect().bottom;
+        setMaskBottomHeight(maskBottomHeight + 142);
+      };
+      window.addEventListener('resize', handleResize);
+      // 首次渲染时主动计算一次
+      handleResize();
+      return () => window.removeEventListener('resize', handleResize);
     }
   }, [imgRef, hasMobile]);
 
@@ -71,7 +80,7 @@ export default function Loading() {
       style={{
         height: hasMobile ? '100%' : '100vh',
       }}
-      className="w-[100%] md:bg-[url('/desktop_bg.png')] bg-cover bg-center"
+      className="w-[100%] md:bg-[url('https://storage.googleapis.com/assets-presslogic/nippon/color-front-static/desktop_bg.png')] bg-cover bg-center"
     >
       <div className="relative md:w-[800px] h-[100%] flex flex-col items-center bg-[#02274F] m-center">
         <div
@@ -82,7 +91,7 @@ export default function Loading() {
           }}
         >
           <Image
-            src="/loading_bg.png"
+            src="https://storage.googleapis.com/assets-presslogic/nippon/color-front-static/loading_bg.png"
             alt="loading"
             width={1200}
             height={940}
@@ -101,7 +110,7 @@ export default function Loading() {
         <Image
           className="z-[2] mt-[0px] md:mt-[10px]"
           ref={imgRef}
-          src="/loading.gif"
+          src="https://storage.googleapis.com/assets-presslogic/nippon/color-front-static/loading.gif"
           alt="loading"
           width={1501}
           height={3249}
