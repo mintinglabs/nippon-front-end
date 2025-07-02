@@ -349,7 +349,7 @@ export const AvatarUpload: React.FC<{
               <div className="absolute top-[-5px] right-[12px] w-[228px] h-[500px] bg-[#fff] text-[#002859] p-[16px]">
                 <span className="text-[16px] font-[700]">裁剪選項</span>
                 <div className="text-[14px] font-[400] mt-[8px]">
-                  為了獲得更好的呈現效果，相片必須為9:16或3:4的直向格式。
+                  為更佳效果，請使用9:16或3:4的直向格式，並確保人物半身完整顯示在裁切框內。
                 </div>
                 <div className="w-[228px] mt-[16px]">
                   <Radio.Group
@@ -431,7 +431,7 @@ export const AvatarUpload: React.FC<{
               <div className="w-full flex flex-col mt-[24px] px-[16px]">
                 <span className="text-[16px] font-[700]">裁剪選項</span>
                 <div className="text-[14px] font-[400] mt-[16px]">
-                  為了獲得更好的呈現效果，相片必須為9:16或3:4的直向格式。
+                  為更佳效果，請使用9:16或3:4的直向格式，並確保人物半身完整顯示在裁切框內。
                 </div>
                 <div className="w-full max-w-[360px] mt-[16px]">
                   <Radio.Group
