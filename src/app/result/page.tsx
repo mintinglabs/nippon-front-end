@@ -121,7 +121,7 @@ export default function Result() {
       .catch((error) => {
         // 用户取消分享时不显示错误提示
         if (error.name !== 'AbortError') {
-          Alert.show('分享失败' + error, 30000);
+          Alert.show('分享失败');
         }
       });
   };

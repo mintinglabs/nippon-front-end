@@ -218,7 +218,7 @@ export default function Result() {
         <Image
           src={
             adImgList[result?.reportStyle?.style?.code as keyof typeof adImgList] ||
-            '/result_ads1.png'
+            'https://storage.googleapis.com/assets-presslogic/nippon/color-front-static/ads_1_1x2.png'
           }
           alt="result"
           width={2400}
