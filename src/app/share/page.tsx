@@ -163,7 +163,7 @@ export default function Result() {
               <Image
                 width={528}
                 height={528}
-                src={`/color/${result?.reportStyle?.colors[0]?.id}-528.png`}
+                src={`/color/${result?.reportStyle?.colors[0]?.id || 'BN7651-4'}-528.png`}
                 alt="result"
                 className="w-[171px] md:text-[28px] object-cover text-[20px] text-[#000000] md:w-[263px] h-[171px] md:h-[263px] text-left flex items-end font-[700] "
               />
@@ -175,7 +175,7 @@ export default function Result() {
                 <Image
                   width={257}
                   height={257}
-                  src={`/color/${result?.reportStyle?.colors[1]?.id}.png`}
+                  src={`/color/${result?.reportStyle?.colors[1]?.id || 'BA7400-1'}.png`}
                   alt="result"
                   className="w-[81px] text-[12px] object-cover md:text-[18px] md:w-[127px] h-[81px] md:h-[127px] text-left flex items-end"
                 />
@@ -183,7 +183,7 @@ export default function Result() {
                 <Image
                   width={257}
                   height={257}
-                  src={`/color/${result?.reportStyle?.colors[3]?.id}.png`}
+                  src={`/color/${result?.reportStyle?.colors[3]?.id || 'BA7400-1'}.png`}
                   alt="result"
                   className="w-[81px] text-[12px] object-cover md:text-[18px] md:w-[127px] h-[81px] md:h-[127px] text-left flex items-end"
                 />
@@ -192,14 +192,14 @@ export default function Result() {
                 <Image
                   width={257}
                   height={257}
-                  src={`/color/${result?.reportStyle?.colors[2]?.id}.png`}
+                  src={`/color/${result?.reportStyle?.colors[2]?.id || 'BA7400-1'}.png`}
                   alt="result"
                   className="w-[81px] text-[12px] object-cover md:text-[18px] md:w-[127px] h-[81px] md:h-[127px] text-left flex items-end"
                 />
                 <Image
                   width={257}
                   height={257}
-                  src={`/color/${result?.reportStyle?.colors[4]?.id}.png`}
+                  src={`/color/${result?.reportStyle?.colors[4]?.id || 'BA7400-1'}.png`}
                   alt="result"
                   className="w-[81px] text-[12px] object-cover md:text-[18px] md:w-[127px] h-[81px] md:h-[127px] text-left flex items-end"
                 />

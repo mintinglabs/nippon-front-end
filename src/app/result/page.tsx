@@ -4,6 +4,7 @@ import { RedoOutlined } from '@ant-design/icons';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
+import debounce from 'lodash.debounce';
 import Alert from '../../../components/Alert';
 import ConnectIcon from '../../../components/ConnectIcon';
 import { isMobile, isIOS } from 'react-device-detect';
@@ -125,6 +126,15 @@ export default function Result() {
         }
       });
   };
+
+  const debouncedShare = debounce(
+    (img) => {
+      console.log('debouncedShare');
+      handleShare(img);
+    },
+    500,
+    { leading: true, trailing: false },
+  );
   return (
     <div className="bg-[url('https://storage.googleapis.com/assets-presslogic/nippon/color-front-static/desktop_bg.png')] overflow-x-hidden bg-cover bg-center flex flex-col items-center">
       <div className="w-[100%] md:w-[600px] bg-[#fff] flex flex-col items-center">
@@ -311,9 +321,7 @@ export default function Result() {
           />
           {hasMobile ? (
             <button
-              onClick={async () => {
-                handleShare(shareImg);
-              }}
+              onClick={() => debouncedShare(shareImg)}
               className="w-[343px] md:w-[400px] h-[44px] mt-[24px] flex items-center justify-center rounded-[25px] text-[14px] font-[700] text-[#FFFFFF] mb-[16px] transition-all duration-300
           bg-[#E30211]"
             >
