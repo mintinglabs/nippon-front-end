@@ -1,5 +1,5 @@
 export default async function generateImage(uuid: string) {
-  const apiUrl = 'http://api.nipponpaint-color-id.com.hk/api/generateImage';
+  const apiUrl = 'https://api.nipponpaint-color-id.com.hk/api/generateImage';
 
   const response = await fetch(apiUrl, {
     headers: {

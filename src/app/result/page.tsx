@@ -27,10 +27,6 @@ export default function Result() {
   const [result, setResult] = useState<any>(null);
 
   const getShareImg = async () => {
-    if (localStorage.getItem('shareImg')) {
-      setShareImg(localStorage.getItem('shareImg') || '');
-      return localStorage.getItem('shareImg');
-    }
     setIsLoading(true);
     try {
       const uuid = localStorage.getItem('uuid');
@@ -39,7 +35,6 @@ export default function Result() {
         const res: any = await generateImage(uuid);
         if (res.message === 'OK') {
           setShareImg(res.data);
-          localStorage.setItem('shareImg', res.data);
         }
         return res.data;
       }
