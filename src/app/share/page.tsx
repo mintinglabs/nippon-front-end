@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from 'react';
 import Alert from '../../../components/Alert';
 import { isMobile } from 'react-device-detect';
 import { getGenerateInfo } from '../../../apis/business';
-import { adImgList, themeList } from './reducer';
+import { themeList } from './reducer';
 import FullSpin from '../../../components/FullSpin';
 import Image from 'next/image';
 // import { toPng } from 'html-to-image';
@@ -215,16 +215,16 @@ export default function Result() {
             </div>
           </div>
         </div>
-        <Image
+        {/* <Image
           src={
             adImgList[result?.reportStyle?.style?.code as keyof typeof adImgList] ||
-            'https://storage.googleapis.com/assets-presslogic/nippon/color-front-static/ads_1_1x2.png'
+            'https://storage.googleapis.com/assets-presslogic/nippon/color-front-static/ads_1_1x2-new.png'
           }
           alt="result"
           width={2400}
           height={1125}
           style={{ width: '100%', height: 'auto' }}
-        />
+        /> */}
       </div>
       {/* )} */}
 

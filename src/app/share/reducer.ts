@@ -2,7 +2,7 @@ export const themeList = {
   S1: {
     title: '明亮簡約風',
     image: ['/S1-img/image.png', '/S1-img/image-1.png'],
-    color: ['#E1E2DB', '#EBDACC', '#B7A383', '#C1BBBC', '#9B705A'],
+    color: ['#EBDACC', '#E1E2DB', '#B7A383', '#C1BBBC', '#9B705A'],
   },
   S2: {
     title: '自然活力風',
@@ -32,7 +32,7 @@ export const themeList = {
 };
 
 export const adImgList = {
-  xwz: 'https://storage.googleapis.com/assets-presslogic/nippon/color-front-static/ads_1_1x2.png',
-  ylz: 'https://storage.googleapis.com/assets-presslogic/nippon/color-front-static/ads_1_2x2.png',
-  xyp: 'https://storage.googleapis.com/assets-presslogic/nippon/color-front-static/ads_1_3x2.png',
+  xwz: 'https://storage.googleapis.com/assets-presslogic/nippon/color-front-static/ads_1_1x2-new.png',
+  ylz: 'https://storage.googleapis.com/assets-presslogic/nippon/color-front-static/ads_1_2x2-new.png',
+  xyp: 'https://storage.googleapis.com/assets-presslogic/nippon/color-front-static/ads_1_3x2-new.png',
 };

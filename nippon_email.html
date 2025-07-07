@@ -15,11 +15,6 @@
   <table width="100%" cellpadding="0" cellspacing="0" border="0"
     style="background:#f7f7f7; max-width: 700px; margin: 0 auto;">
     <tr>
-      <td style="position:absolute;background:#fff;opacity:0;">
-        <div>{data}</div>
-      </td>
-    </tr>
-    <tr>
       <td align="center" style="background:#fff;">
         <table cellpadding="0" cellspacing="0" border="0"
           style="background:#fff;margin: 0 auto;overflow:hidden;font-family:Arial, Helvetica, sans-serif;">
@@ -28,10 +23,15 @@
             <td>
               <table style="max-width: 632px;margin: 0 auto;">
                 <tr>
-                  <td style="padding:24px 0 12px 0;text-align:center;background:#fff;">
-                    <img class="mobile-center" style="height:40px;"
-                      src="https://storage.googleapis.com/assets-presslogic/nippon/base/nippon_logo.png"
-                      alt="Nippon Paint">
+                  <td style="padding:24px 0 12px 0;text-align:center;background:#fff;
+                    background-image: url('https://storage.googleapis.com/assets-presslogic/nippon/base/nippon_logo.png');
+                    background-repeat: no-repeat;
+                    background-position: center;
+                    background-size: auto 40px;
+                    height: 40px;
+                  ">
+                    <!-- 可添加 aria-label 以保留无障碍语义 -->
+                    <!-- <div style="width: 100%; height: 40px;" role="img" aria-label="Nippon Paint"></div> -->
                   </td>
                 </tr>
                 <!-- 顶部按钮 -->
@@ -46,7 +46,11 @@
                     報告及 AI 家居模擬短片，預見家的無限可能！
                   </td>
                 </tr>
-
+                <tr>
+                  <td style="position:absolute;background:#fff;opacity:0;">
+                    <div>{{data}}</div>
+                  </td>
+                </tr>
           </tr>
         </table>
       </td>
@@ -86,9 +90,10 @@
           <div style="font-size:18px;text-align:left;margin:12px 0 20px 0;color:#fff;">
             將您的理想家居變為真實！
           </div>
-          <div style="text-align:center;">
-            <img src="https://storage.googleapis.com/assets-presslogic/nippon/base/nippon_decoration_effect-new.png"
-              alt="before after" style="width:100%;">
+          <div
+            style="text-align:center;background-image:url('https://storage.googleapis.com/assets-presslogic/nippon/base/nippon_decoration_effect-new.png');background-repeat:no-repeat;background-position:center;background-size:cover;width:100%;padding-top: 44%;">
+            <!-- <img src="https://storage.googleapis.com/assets-presslogic/nippon/base/nippon_decoration_effect-new.png"
+              alt="before after" style="width:100%;"> -->
           </div>
         </div>
         <div>
@@ -105,22 +110,21 @@
               <div
                 style="max-width: 253px;font-size:24px;font-weight:bold;color:#FF5FC2;margin-bottom:16px;padding-top: 18px;">
                 參賽流程：</div>
-              <div style="max-width: 253px;font-size:18px;font-weight:bold;color:#23ECFD;">1.分享靈感：</div>
+              <div style="max-width: 253px;font-size:18px;font-weight:bold;color:#23ECFD;">1.事先登記：</div>
               <div style="max-width: 253px;font-size:18px;color:#fff;line-height:1.7;">
-                將您的 AI 分析結果截圖，分享至您的個人 Facebook 或 Instagram。
+                請先追蹤 (Follow)<a
+                  href="https://www.facebook.com/nipponpainthongkong?utm_source=PL&utm_medium=edm&utm_campaign=COLORIDLAB"
+                  style="color:#23ECFD;" target="_blank">立邦
+                  Facebook</a> 或 <a
+                  href="https://www.instagram.com/nipponpainthk?utm_source=PL&utm_medium=edm&utm_campaign=COLORIDLAB"
+                  style="color:#23ECFD;" target="_blank">Instagram帳號</a>，並於指定遊戲貼文留言中標註 (Tag) 3位朋友。
               </div>
             </td>
             <!-- 右侧图片/社交图标 -->
             <td valign="middle" align="right">
-              <table cellpadding="0" cellspacing="0" border="0">
-                <tr>
-                  <td align="center">
-                    <img class="mobile-full"
-                      src="https://storage.googleapis.com/assets-presslogic/nippon/base/nippon_share1.png" alt="角色"
-                      style="width:100%;max-width:278px;">
-                  </td>
-                </tr>
-              </table>
+              <div class="mobile-full"
+                style="width:100%;max-width:278px;background:url('https://storage.googleapis.com/assets-presslogic/nippon/base/nippon_share2.png') no-repeat center center;background-size:cover;padding-top: 70.76%;">
+              </div>
             </td>
 
           </tr>
@@ -132,31 +136,18 @@
 
             <!-- 右侧图片/社交图标 -->
             <td valign="middle" align="left">
-              <table cellpadding="0" cellspacing="0" border="0">
-                <tr>
-                  <td align="left">
-                    <img class="mobile-full"
-                      src="https://storage.googleapis.com/assets-presslogic/nippon/base/nippon_share2.png" alt="角色"
-                      style="width:100%;max-width:278px;">
-                  </td>
-                </tr>
-              </table>
+              <div class="mobile-full"
+                style="width:100%;max-width:278px;background:url('https://storage.googleapis.com/assets-presslogic/nippon/base/nippon_share1.png') no-repeat center center;background-size:cover;padding-top: 58.87%;">
+              </div>
             </td>
 
             <!-- 左侧文字 -->
             <td valign="top" align="right" style="padding-left: 16px;" width="50%">
               <div
                 style="text-align: left;max-width: 253px;font-size:18px;font-weight:bold;color:#23ECFD;padding-top: 35px;">
-                2.完成登記：</div>
+                2.分享靈感：</div>
               <div style="text-align: left;max-width: 253px;font-size:18px;color:#fff;line-height:1.7;">
-                在 <a href="https://google.com" style="color:#23ECFD;" target="_blank">Google Form</a> 上傳截圖，標註
-                (Tag) 3 位朋友，並追蹤
-                (Follow) <a
-                  href="https://www.facebook.com/nipponpainthongkong?utm_source=PL&utm_medium=edm&utm_campaign=COLORIDLAB"
-                  style="color:#23ECFD;" target="_blank">立邦
-                  Facebook</a> 或 <a
-                  href="https://www.instagram.com/nipponpainthk?utm_source=PL&utm_medium=edm&utm_campaign=COLORIDLAB"
-                  style="color:#23ECFD;" target="_blank">Instagram帳號</a>。
+                將您的 AI 分析結果分享至您的個人 Facebook 或 Instagram。
               </div>
             </td>
           </tr>
@@ -168,23 +159,18 @@
             <!-- 左侧文字 -->
             <td valign="top" style="padding-right: 16px;" width="50%">
 
-              <div style="max-width: 253px;font-size:18px;font-weight:bold;color:#23ECFD;padding-top: 60px;">
+              <div style="max-width: 253px;font-size:18px;font-weight:bold;color:#23ECFD;padding-top: 40px;">
                 3.分享您的計劃：</div>
               <div style="max-width: 253px;font-size:18px;color:#fff;line-height:1.7;">
-                告訴我們：「您會打算將AI建議顏色用在家居哪個空間?」(請以80字內解釋)
+                請將已分享到社交媒體的分析結果截圖上載至<a href="https://google.com" style="color:#23ECFD;" target="_blank">登記表格</a> ，並回答:
+                「您會打算將AI建議顏色用在家居哪個空間?」 (請以80字內說明)。
               </div>
             </td>
             <!-- 右侧图片/社交图标 -->
-            <td valign="middle" align="right">
-              <table cellpadding="0" cellspacing="0" border="0">
-                <tr>
-                  <td align="center">
-                    <img class="mobile-full"
-                      src="https://storage.googleapis.com/assets-presslogic/nippon/base/nippon_share3.png" alt="角色"
-                      style="width:100%;max-width:278px;">
-                  </td>
-                </tr>
-              </table>
+            <td valign="middle" width="50%" style="height: 100%;" align="right">
+              <div class="mobile-full"
+                style="width:100%;max-width:278px;background:url('https://storage.googleapis.com/assets-presslogic/nippon/base/nippon_share3.png') no-repeat center center;background-size:cover;padding-top: 77.8%;">
+              </div>
             </td>
           </tr>
         </table>
@@ -210,14 +196,15 @@
               <div style="font-size:24px;font-weight:bold;color:#FF5FC2;margin-bottom:16px;padding-top: 18px;">
                 豐富獎品等著您：</div>
 
-              <div>
-                <img class="mobile-full" style="width: 100%;"
-                  src="https://storage.googleapis.com/assets-presslogic/nippon/base/reward1-new0627-hd.png" alt="">
+              <div
+                style="width:100%;background:url('https://storage.googleapis.com/assets-presslogic/nippon/base/reward1-new0627-hd.png') no-repeat center center;background-size:cover;padding-top: 73.12%;">
+                <!-- <img class="mobile-full" style="width: 100%;"
+                    src="https://storage.googleapis.com/assets-presslogic/nippon/base/reward1-new0627-hd.png" alt=""> -->
               </div>
 
               <div style="font-size:24px;font-weight:bold;color:#52FFFA;margin-bottom:16px;padding-top: 18px;">
                 免費全屋油漆翻新</div>
-              <div style="font-size:18px;">
+              <div style="font-size:18px;color: #fff;">
                 立邦專業刷新服務包括牆身及天花髹油工程，更升級採用「立邦抗病毒淨味兒童漆」，總值高達HK$60,000 (適用於500平方呎或以下單位)。
               </div>
               <div style="font-size:14px;color:#fff;line-height:1.7;padding-top: 16px;">
@@ -229,9 +216,10 @@
         <table class="mobile-content" width="100%" cellpadding="0" cellspacing="0" border="0"
           style="padding:24px 16px 0 16px;">
           <tr class="mobile-display">
-            <td align="center" valign="top">
-              <img class="mobile-full mobile-scale" style="width: 85%;margin-top:40px;"
-                src="https://storage.googleapis.com/assets-presslogic/nippon/base/reward2-new0627.png" alt="">
+            <td width="50%" align="center" valign="top">
+              <div
+                style="width: 85%;margin-top:40px; background:url('https://storage.googleapis.com/assets-presslogic/nippon/base/reward2-new0627.png') no-repeat center center;background-size:cover;padding-top: 92%;">
+              </div>
               <div
                 style="text-align:center;font-size:24px;font-weight:bold;color:#52FFFA;margin-bottom:16px;padding-top: 18px;">
                 IKEA HK$500 禮品卡</div>
@@ -243,9 +231,10 @@
             <td>
 
             </td>
-            <td align="center">
-              <img class="mobile-full mobile-scale" style="width: 85%;margin-top:40px;"
-                src="https://storage.googleapis.com/assets-presslogic/nippon/base/reward3-new0627.png" alt="">
+            <td width="50%" align="center">
+              <div
+                style="width: 85%;margin-top:40px; background:url('https://storage.googleapis.com/assets-presslogic/nippon/color-front-static/reward3-new0707.png') no-repeat center center;background-size:cover;padding-top: 92%;">
+              </div>
 
               <div
                 style="text-align:center;font-size:24px;font-weight:bold;color:#52FFFA;margin-bottom:16px;padding-top: 18px;">
@@ -288,8 +277,9 @@
     <tr>
       <td style="padding:0 16px;background:#fff;">
         <div style="max-width: 632px;margin: 0 auto;">
-          <img style="width: 100%;"
-            src="https://storage.googleapis.com/assets-presslogic/nippon/base/color_list-new-hd.png" alt="">
+          <div
+            style="width: 100%;background:url('https://storage.googleapis.com/assets-presslogic/nippon/base/color_list-new-hd.png') no-repeat center center;background-size:cover;padding-top: 152.37%;">
+          </div>
         </div>
       </td>
     <tr>
@@ -316,8 +306,9 @@
     <!-- Footer -->
     <tr>
       <td style="background:#00284F;color:#fff;text-align:center;padding:24px 0;font-size:16px;font-weight:bold;">
-        <img style="width: 100%;" src="https://storage.googleapis.com/assets-presslogic/nippon/base/nippon_ads1.png"
-          alt="">
+        <div
+          style="width: 100%;background:url('https://storage.googleapis.com/assets-presslogic/nippon/base/nippon_ads1.png') no-repeat center center;background-size:cover;padding-top: 63%;">
+        </div>
       </td>
     <tr>
       <td align="center">
@@ -338,9 +329,8 @@
       </td>
     </tr>
     <tr>
-      <td style="display: flex;background:#00284F;color:#fff;text-align:center;font-size:16px;font-weight:bold;">
-        <img style="width: 100%;" src="https://storage.googleapis.com/assets-presslogic/nippon/base/nippon_ads3.png"
-          alt="">
+      <td
+        style="display: flex;background:#00284F;color:#003888;text-align:center;font-size:16px;font-weight:bold;background-image:url('https://storage.googleapis.com/assets-presslogic/nippon/base/nippon_ads3.png');background-repeat:no-repeat;background-size: cover;padding-top: 18%;">
       </td>
     </tr>
   </table>

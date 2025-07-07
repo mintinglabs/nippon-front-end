@@ -93,7 +93,7 @@ export const QNA = [
           'https://storage.googleapis.com/assets-presslogic/nippon/color-front-static/a_bg2.png',
       },
       {
-        text: '專業配套：信賴一站式專業服務，從配色到施工都省心！',
+        text: '品牌信譽：信賴一站式專業服務，從配色到施工都省心！',
         background:
           'https://storage.googleapis.com/assets-presslogic/nippon/color-front-static/a_bg3.png',
       },

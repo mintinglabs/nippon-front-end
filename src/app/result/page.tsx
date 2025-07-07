@@ -41,7 +41,7 @@ export default function Result() {
       }
     } catch (error) {
       console.log(error);
-      Alert.show('生成分享圖片失败' + error);
+      Alert.show('生成分享圖片失败, 請刷新後重試');
     } finally {
       setIsLoading(false);
     }
@@ -114,10 +114,10 @@ export default function Result() {
     const file = new File([blob], 'color-result.png', { type: 'image/png' });
     navigator
       .share({
-        title: 'Nippon',
-        text: 'Nippon',
+        title: 'NP-COLOR ID 色彩報告',
+        text: '這是我的NP-COLOR ID 色彩報告，你都一齊來發掘色彩基因啦! ',
         files: [file],
-        url: window.location.href,
+        url: 'https://www.nipponpaint-color-id.com.hk',
       })
       .catch((error) => {
         // 用户取消分享时不显示错误提示

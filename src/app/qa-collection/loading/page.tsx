@@ -4,38 +4,16 @@ import { useEffect, useRef, useState } from 'react';
 import { getGenerateInfo } from '../../../../apis/business';
 import { useRouter } from 'next/navigation';
 import { Modal } from 'antd';
-import { isMobile } from 'react-device-detect';
 
 export default function Loading() {
   const imgRef = useRef<HTMLImageElement>(null);
-  const [maskHeight, setMaskHeight] = useState('auto');
-  const [maskBottomHeight, setMaskBottomHeight] = useState(0);
   const router = useRouter();
   const [isError, setIsError] = useState(false);
-
-  const [hasMobile, setHasMobile] = useState(false);
-  useEffect(() => {
-    setHasMobile(isMobile);
-  }, []);
-  useEffect(() => {
-    if (imgRef.current) {
-      setMaskHeight(imgRef.current.height / (hasMobile ? 2.25 : 2.2) + 'px');
-      // imgRef 距离底部的距离
-      // 监听窗口高度变化，如果高度变化，则重新计算 maskBottomHeight
-      // 首次渲染也需要计算一次
-      const handleResize = () => {
-        if (!imgRef.current) return;
-        const maskBottomHeight = window.innerHeight - imgRef.current.getBoundingClientRect().bottom;
-        setMaskBottomHeight(maskBottomHeight + 142);
-      };
-      window.addEventListener('resize', handleResize);
-      // 首次渲染时主动计算一次
-      handleResize();
-      return () => window.removeEventListener('resize', handleResize);
-    }
-  }, [imgRef, hasMobile]);
+  const [maskHeight, setMaskHeight] = useState(0);
 
   const timer = useRef<NodeJS.Timeout | null>(null);
+
+  useEffect(() => {}, []);
 
   useEffect(() => {
     if (timer.current) {
@@ -75,55 +53,74 @@ export default function Loading() {
     };
   }, [router]);
 
+  useEffect(() => {
+    function updateMaskHeight() {
+      if (imgRef.current) {
+        const rect = imgRef.current.getBoundingClientRect();
+        const distanceToBottom = window.innerHeight - rect.bottom;
+        setMaskHeight(distanceToBottom + 130);
+      }
+    }
+
+    // 监听窗口变化
+    window.addEventListener('resize', updateMaskHeight);
+
+    // 图片加载后也要计算一次
+    if (imgRef.current) {
+      if (imgRef.current.complete) {
+        updateMaskHeight();
+      } else {
+        imgRef.current.onload = updateMaskHeight;
+      }
+    }
+
+    // 首次渲染主动计算一次
+    updateMaskHeight();
+
+    return () => {
+      window.removeEventListener('resize', updateMaskHeight);
+      if (imgRef.current) {
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        imgRef.current.onload = null;
+      }
+    };
+  }, []);
+
   return (
-    <div
-      style={{
-        height: hasMobile ? '100%' : '100vh',
-      }}
-      className="w-[100%] md:bg-[url('https://storage.googleapis.com/assets-presslogic/nippon/color-front-static/desktop_bg.png')] bg-cover bg-center"
-    >
-      <div className="relative md:w-[800px] h-[100%] flex flex-col items-center bg-[#02274F] m-center">
-        <div
-          className="absolute w-[100%] md:w-[800px] z-[10] top-0 left-0 md:left-[50%] md:translate-x-[-50%] h-[30%] bg-[#02274F] flex flex-col items-center"
-          style={{
-            height: maskHeight,
-            gap: hasMobile ? '26px' : '19px',
-          }}
-        >
+    <div className="h-[100vh] w-full flex flex-col justify-center items-center overflow-hidden bg-[url('https://storage.googleapis.com/assets-presslogic/nippon/color-front-static/desktop_bg.png')] bg-cover bg-center">
+      <div className="flex-1 w-full max-w-[800px] flex flex-col justify-center items-center bg-[#02274F]">
+        <div className="w-full flex flex-col items-center justify-center">
           <Image
-            src="https://storage.googleapis.com/assets-presslogic/nippon/color-front-static/loading_bg.png"
+            src="/loading_bg.png"
             alt="loading"
             width={1200}
             height={940}
             style={{
-              width: hasMobile ? '100%' : '300px',
+              width: '100%',
               height: 'auto',
-              marginTop: hasMobile ? '-20px' : '0',
-              paddingBottom: hasMobile ? '15px' : '0',
             }}
           />
-          <div className="md:w-[300px] w-[100%] z-[10] flex items-center justify-center">
+          <div className="w-full max-w-[300px] flex items-center justify-center mt-[16px]">
             <span className="loader" />
           </div>
         </div>
-
-        <Image
-          className="z-[2] mt-[0px] md:mt-[10px]"
-          ref={imgRef}
-          src="https://storage.googleapis.com/assets-presslogic/nippon/color-front-static/loading.gif"
-          alt="loading"
-          width={1501}
-          height={3249}
-          unoptimized
-          style={{ width: hasMobile ? '100%' : '300px', height: 'auto' }}
-        />
-
+        <div className="flex-1 w-full flex justify-center items-start relative z-10">
+          <Image
+            className="w-full max-w-[300px] h-auto"
+            ref={imgRef}
+            src="/loading.gif"
+            alt="loading"
+            width={1501}
+            height={3249}
+            unoptimized
+          />
+        </div>
         <div
           style={{
-            height: maskBottomHeight,
+            height: maskHeight,
           }}
-          className="w-[100%] hidden md:block z-[1] absolute bottom-0 left-0 right-0 bg-[#003888]"
-        ></div>
+          className="w-full md:w-[800px] md:left-[50%] md:translate-x-[-50%] bg-[#003888] absolute bottom-0 left-0 right-0"
+        />
       </div>
       <Modal
         title="抱歉😣生成遇到問題"

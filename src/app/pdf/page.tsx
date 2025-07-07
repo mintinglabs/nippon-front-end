@@ -78,11 +78,12 @@ export default function Result() {
           <img src={imageUrl} alt="result" />
         </div>
       ) : ( */}
-      <div ref={resultRef} className="w-[100%] md:w-[600px] bg-[#fff] flex flex-col items-center">
-        <div
-          id="result-container"
-          className="w-[100%] flex flex-col items-center bg-cover bg-center pb-[24px] md:pb-[32px]"
-        >
+      <div
+        ref={resultRef}
+        id="result-container"
+        className="w-[100%] md:w-[600px] bg-[#fff] flex flex-col items-center"
+      >
+        <div className="w-[100%] flex flex-col items-center bg-cover bg-center pb-[24px] md:pb-[32px]">
           <img
             src="https://storage.googleapis.com/assets-presslogic/nippon/color-front-static/result_top_bg.png"
             alt="result"
@@ -218,7 +219,7 @@ export default function Result() {
         <Image
           src={
             adImgList[result?.reportStyle?.style?.code as keyof typeof adImgList] ||
-            'https://storage.googleapis.com/assets-presslogic/nippon/color-front-static/ads_1_1x2.png'
+            'https://storage.googleapis.com/assets-presslogic/nippon/color-front-static/ads_1_1x2-new.png'
           }
           alt="result"
           width={2400}

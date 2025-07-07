@@ -97,7 +97,7 @@ export default function QACollection() {
   };
 
   return (
-    <div className="md:flex md:min-h-[100vh] flex-col items-center md:bg-[url('https://storage.googleapis.com/assets-presslogic/nippon/color-front-static/desktop_bg.png')] bg-cover bg-center">
+    <div className="flex md:h-auto min-h-[100vh] flex-col items-center md:bg-[url('https://storage.googleapis.com/assets-presslogic/nippon/color-front-static/desktop_bg.png')] bg-cover bg-center">
       <div className="w-[100%] flex-1 p-[16px] md:p-[32px] pb-[0] md:w-[800px] bg-[#002859] pt-[16px] flex flex-col items-center justify-center">
         <div
           className="w-[100%] flex-1 bg-scroll-y-desktop"
@@ -122,7 +122,7 @@ export default function QACollection() {
               <StepProgress currentStep={currentStep} totalStep={4} />
             </div>
           </header>
-          <div className="relative flex items-start justify-center bg-cover bg-center pt-[5px]">
+          <div className="relative flex items-start justify-center bg-cover bg-center pt-[5px] mt-[-15px]">
             <Image
               src="https://storage.googleapis.com/assets-presslogic/nippon/color-front-static/nippon_logo.png"
               alt="logo"
@@ -130,7 +130,7 @@ export default function QACollection() {
               height={32}
             />
           </div>
-          <div className="relative h-[48px] flex gap-[20px] mt-[24px] items-center justify-center">
+          <div className="relative h-[32px] md:h-[48px] flex gap-[20px] mt-[8px] md:mt-[24px] items-center justify-center">
             <div
               onClick={handleBack}
               className="absolute cursor-pointer left-0 w-[24px] h-[24px] flex items-center justify-center bg-[#FFFFFF] rounded-full"
@@ -140,10 +140,13 @@ export default function QACollection() {
             <StepProgress currentStep={currentStep} totalStep={4} />
           </div>
           <div className="mt-[12px] flex flex-col items-center justify-center">
-            <span className="text-[#FF7CFF] text-[24px] font-bold text-center">
+            <span className="text-[#FF7CFF] text-[18px] md:text-[24px] font-bold text-center">
               {QNA[currentStep - 1].question}
             </span>
-            <div key={currentStep} className="flex flex-col gap-[24px] mt-[24px] cursor-pointer">
+            <div
+              key={currentStep}
+              className="flex flex-col gap-[16px] md:gap-[24px] mt-[16px] md:mt-[24px] cursor-pointer"
+            >
               {QNA[currentStep - 1].options.map((option, index) => (
                 <div
                   onClick={() => {
@@ -166,7 +169,7 @@ export default function QACollection() {
                   onMouseEnter={() => setIsHover(index)}
                   onMouseLeave={() => setIsHover(-1)}
                   key={index}
-                  className="animate__animated animate__fadeInDown transition-all duration-300 w-[311px] h-[120px] p-[16px] text-[16px] font-bold text-center flex flex-col items-center justify-center"
+                  className="animate__animated animate__fadeInDown transition-all duration-300 w-[260px] h-[100px] md:w-[311px] md:h-[120px] p-[16px] text-[14px] md:text-[16px] font-bold text-center flex flex-col items-center justify-center"
                 >
                   <div className="w-[28px] h-[28px] text-[#fff] flex items-center justify-center bg-[#E30211] rounded-full">
                     {String.fromCharCode(65 + index)}
@@ -179,7 +182,7 @@ export default function QACollection() {
           <div className="flex items-center justify-center">
             <button
               onClick={handleNext}
-              className={`w-[311px] h-[44px] cursor-pointer flex items-center justify-center gap-[8px] rounded-[25px] text-[15px] font-[700] text-[#FFFFFF] mt-[32px] mb-[24px] transition-all duration-300
+              className={`w-[311px] h-[44px] cursor-pointer flex items-center justify-center gap-[8px] rounded-[25px] text-[15px] font-[700] text-[#FFFFFF] mt-[16px]  md:mt-[32px] mb-[16px] md:mb-[24px] transition-all duration-300
           ${answer[currentStep - 1] && !isLoading ? 'bg-[#E30211]' : 'bg-[#CACACA]'}
           `}
             >
