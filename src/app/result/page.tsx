@@ -404,7 +404,7 @@ export default function Result() {
             </a>
           </div>
           <Image
-            src="https://storage.googleapis.com/assets-presslogic/nippon/color-front-static/result_ads4.png"
+            src="https://storage.googleapis.com/assets-presslogic/nippon/color-front-static/nippon_ads1-new.png"
             alt="result"
             width={1500}
             height={978}

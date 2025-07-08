@@ -226,6 +226,13 @@ export default function Result() {
           height={1125}
           style={{ width: '100%', height: 'auto' }}
         />
+        <Image
+          src="https://storage.googleapis.com/assets-presslogic/nippon/color-front-static/nippon_ads1-new.png"
+          alt="result"
+          width={2400}
+          height={1125}
+          style={{ width: '100%', height: 'auto', marginTop: '-4px' }}
+        />
       </div>
       {/* )} */}
 

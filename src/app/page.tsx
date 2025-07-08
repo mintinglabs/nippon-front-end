@@ -318,9 +318,14 @@ export default function Home() {
               虛擬試妝體驗。您的照片將在您的瀏覽器中存儲和處理。當你關閉或離開當前瀏覽器,
               您的照片將被刪除。通過上載您的照片，您確認您已年滿十八歲,
               同意我們為此目的使用您的照片, 並同意本推廣活動的
-              <span className="underline">條款細則</span>
+              <a href="/tc.html" target="_blank" className="underline">
+                條款細則
+              </a>
               。有關更多資訊，請參閱我們的
-              <span className="underline">私隱政策</span> 。
+              <a href="/pp.html" target="_blank" className="underline">
+                私隱政策
+              </a>{' '}
+              。
             </span>
           </div>
           <div className="flex justify-center">
