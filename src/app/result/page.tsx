@@ -129,7 +129,6 @@ export default function Result() {
 
   const debouncedShare = debounce(
     (img) => {
-      console.log('debouncedShare');
       handleShare(img);
     },
     500,
