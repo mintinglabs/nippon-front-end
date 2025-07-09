@@ -7,12 +7,11 @@ import { useEffect, useRef, useState } from 'react';
 import debounce from 'lodash.debounce';
 import Alert from '../../../components/Alert';
 import ConnectIcon from '../../../components/ConnectIcon';
-import { isMobile, isIOS } from 'react-device-detect';
+import { isMobile } from 'react-device-detect';
 import { getGenerateInfo } from '../../../apis/business';
 import { adImgList, themeList } from './reducer';
 import FullSpin from '../../../components/FullSpin';
 import generateImage from '../../../apis/business/generateImage';
-import { toPng } from 'html-to-image';
 
 export default function Result() {
   const router = useRouter();
@@ -81,31 +80,30 @@ export default function Result() {
     }
   };
 
-  const generateImageLoacl = async () => {
-    setIsLoading(true);
-    const node = resultContainerRef.current;
-    if (!node) return;
+  // const generateImageLoacl = async () => {
+  //   setIsLoading(true);
+  //   const node = resultContainerRef.current;
+  //   if (!node) return;
 
-    try {
-      const dataUrl = await toPng(node, {
-        quality: 0.5,
-        pixelRatio: 2,
-        cacheBust: true,
-      });
-      setShareImg(dataUrl);
-    } catch (err) {
-      console.error('toPng fail', err);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  //   try {
+  //     const dataUrl = await toPng(node, {
+  //       quality: 0.5,
+  //       pixelRatio: 2,
+  //       cacheBust: true,
+  //     });
+  //     setShareImg(dataUrl);
+  //   } catch (err) {
+  //     console.error('toPng fail', err);
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
 
   useEffect(() => {
-    if (result && !isIOS) {
-      generateImageLoacl();
-    } else if (result && isIOS) {
+    if (result) {
       getShareImg();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [result]);
 
   useEffect(() => {
