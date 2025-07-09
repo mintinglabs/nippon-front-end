@@ -315,7 +315,7 @@ export default function Home() {
             <Checkbox checked={isAgreeChecked} onChange={setIsAgreeChecked} />
             <span>
               本程式將使用您的姓名及照片來為您提供
-              <span className="font-[800]"> AI 虛擬試妝體驗</span>
+              <span className="font-[800]"> AI 虛擬家居體驗</span>
               。您的照片將在您的瀏覽器中存儲和處理。當你關閉或離開當前瀏覽器,
               您的照片將被刪除。通過上載您的照片，您確認您已年滿十八歲,
               同意我們為此目的使用您的照片, 並同意本推廣活動的
