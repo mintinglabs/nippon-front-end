@@ -27,6 +27,7 @@ export default function Result() {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [result, setResult] = useState<any>(null);
 
+  let callBackTime = true;
   const getShareImg = async () => {
     setIsLoading(true);
     try {
@@ -40,6 +41,11 @@ export default function Result() {
         return res.data;
       }
     } catch (error) {
+      if (callBackTime) {
+        callBackTime = false;
+        getShareImg();
+        return;
+      }
       console.log(error);
       Alert.show('生成分享圖片失败, 請刷新後重試');
     } finally {
