@@ -237,7 +237,7 @@ export default function Home() {
           Alert.show(res.message);
           return;
         }
-        if (res.data.generateNumber >= 20) {
+        if (res.data.generateNumber >= 10) {
           setIsGenerateCountExceeded(true);
           return;
         }
