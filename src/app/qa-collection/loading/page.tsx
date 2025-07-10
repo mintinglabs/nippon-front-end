@@ -88,7 +88,7 @@ export default function Loading() {
 
   return (
     <div className="h-[100vh] w-full flex flex-col justify-center items-center overflow-hidden bg-[url('https://storage.googleapis.com/assets-presslogic/nippon/color-front-static/desktop_bg.png')] bg-cover bg-center">
-      <div className="flex-1 w-full max-w-[800px] flex flex-col justify-center items-center bg-[#02274F]">
+      <div className="flex-1 w-full max-w-[600px] flex flex-col justify-center items-center bg-[#02274F]">
         <div className="w-full flex flex-col items-center justify-center">
           <Image
             src="/loading_bg.png"
@@ -119,7 +119,7 @@ export default function Loading() {
           style={{
             height: maskHeight,
           }}
-          className="w-full md:w-[800px] md:left-[50%] md:translate-x-[-50%] bg-[#003888] absolute bottom-0 left-0 right-0"
+          className="w-full md:w-[600px] md:left-[50%] md:translate-x-[-50%] bg-[#003888] absolute bottom-0 left-0 right-0"
         />
       </div>
       <Modal
