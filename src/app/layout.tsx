@@ -58,7 +58,6 @@ export default function RootLayout({
             `,
           }}
         />
-
         {/* GA4 基础脚本 */}
         <Script
           strategy="afterInteractive"
@@ -69,9 +68,7 @@ export default function RootLayout({
             window.dataLayer = window.dataLayer || [];
             function gtag(){ dataLayer.push(arguments); }
             gtag('js', new Date());
-            gtag('config', 'G-9S4BL5BLBD', {
-              page_path: window.location.pathname,
-            });
+            gtag('config', 'G-9S4BL5BLBD');
           `}
         </Script>
       </head>
