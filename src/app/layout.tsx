@@ -5,7 +5,6 @@ import './globals.css';
 import { Suspense } from 'react';
 import FullSpin from '../../components/FullSpin';
 import Script from 'next/script';
-
 const geistSans = Geist({
   variable: '--font-geist-sans',
   subsets: ['latin'],
@@ -59,6 +58,22 @@ export default function RootLayout({
             `,
           }}
         />
+
+        {/* GA4 基础脚本 */}
+        <Script
+          strategy="afterInteractive"
+          src="https://www.googletagmanager.com/gtag/js?id=G-9S4BL5BLBD"
+        />
+        <Script id="ga4-init" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){ dataLayer.push(arguments); }
+            gtag('js', new Date());
+            gtag('config', 'G-9S4BL5BLBD', {
+              page_path: window.location.pathname,
+            });
+          `}
+        </Script>
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         {/* Google Tag Manager (noscript) */}

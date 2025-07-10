@@ -4,8 +4,11 @@ import { useEffect, useRef, useState } from 'react';
 import { getGenerateInfo } from '../../../../apis/business';
 import { useRouter } from 'next/navigation';
 import { Modal } from 'antd';
+import { usePageView } from '@/app/analytics/pageview';
 
 export default function Loading() {
+  usePageView();
+
   const imgRef = useRef<HTMLImageElement>(null);
   const router = useRouter();
   const [isError, setIsError] = useState(false);

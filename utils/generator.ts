@@ -15,3 +15,23 @@ export function generateRequestId() {
   // 4. 组合ID: [时间戳13位] + [随机数3位] + [校验码4位]
   return timestamp + random + checksum;
 }
+
+// app/analytics/gtag.ts
+export const GA_TRACKING_ID = 'G-9S4BL5BLBD';
+export const gaEvent = ({
+  action,
+  category,
+  label,
+  value,
+}: {
+  action: string;
+  category: string;
+  label: string;
+  value?: number;
+}) => {
+  window.gtag?.('event', action, {
+    event_category: category,
+    event_label: label,
+    value,
+  });
+};

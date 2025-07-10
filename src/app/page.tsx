@@ -11,6 +11,7 @@ import { useRouter } from 'next/navigation';
 import { isMobile } from 'react-device-detect';
 import { getGenerateCount } from '../../apis/business';
 import { LoadingOutlined } from '@ant-design/icons';
+import { usePageView } from './analytics/pageview';
 
 type FormConf = {
   id: 1 | 2 | 3;
@@ -22,6 +23,8 @@ type FormConf = {
 const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
 export default function Home() {
+  usePageView();
+
   const router = useRouter();
   const [formData, setFormData] = useState({
     name: '',

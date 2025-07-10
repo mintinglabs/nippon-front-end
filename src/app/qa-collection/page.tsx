@@ -8,6 +8,7 @@ import { LoadingOutlined } from '@ant-design/icons';
 import { useRouter } from 'next/navigation';
 import { submitForm } from '../../../apis/business';
 import Alert from '../../../components/Alert';
+import { usePageView } from '../analytics/pageview';
 
 const StepProgress = ({ currentStep = 1, totalStep = 4 }) => {
   const percent = (currentStep / totalStep) * 100;
@@ -31,6 +32,8 @@ const StepProgress = ({ currentStep = 1, totalStep = 4 }) => {
 };
 
 export default function QACollection() {
+  usePageView();
+
   const router = useRouter();
   const [isHeaderVisible, setIsHeaderVisible] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);

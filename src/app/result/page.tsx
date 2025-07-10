@@ -12,8 +12,12 @@ import { getGenerateInfo } from '../../../apis/business';
 import { adImgList, themeList } from './reducer';
 import FullSpin from '../../../components/FullSpin';
 import generateImage from '../../../apis/business/generateImage';
+import { usePageView } from '../analytics/pageview';
+import { gaEvent } from '../../../utils/generator';
 
 export default function Result() {
+  usePageView();
+
   const router = useRouter();
   const resultContainerRef = useRef<HTMLDivElement>(null);
   const [isCopied, setIsCopied] = useState(false);
@@ -36,6 +40,12 @@ export default function Result() {
         const res: any = await generateImage(uuid);
         if (res.message === 'OK') {
           setShareImg(res.data);
+          // 生成成功数据上报
+          gaEvent({
+            action: 'report_generated',
+            category: 'report',
+            label: 'AI Tool',
+          });
         }
         return res.data;
       }
