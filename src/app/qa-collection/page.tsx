@@ -66,7 +66,7 @@ export default function QACollection() {
         behavior: 'smooth',
       });
     }
-    if (currentStep === QNA.length) {
+    if (answer.length === QNA.length) {
       setIsLoading(true);
       try {
         const formData = JSON.parse(localStorage.getItem('formData') || '{}');
