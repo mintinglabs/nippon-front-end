@@ -90,25 +90,6 @@ export default function Result() {
     }
   };
 
-  // const generateImageLoacl = async () => {
-  //   setIsLoading(true);
-  //   const node = resultContainerRef.current;
-  //   if (!node) return;
-
-  //   try {
-  //     const dataUrl = await toPng(node, {
-  //       quality: 0.5,
-  //       pixelRatio: 2,
-  //       cacheBust: true,
-  //     });
-  //     setShareImg(dataUrl);
-  //   } catch (err) {
-  //     console.error('toPng fail', err);
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // };
-
   useEffect(() => {
     if (result) {
       getShareImg();
@@ -394,14 +375,14 @@ export default function Result() {
             style={{ width: '100%', height: 'auto' }}
           />
 
-          <Image
+          {/* <Image
             src="https://storage.googleapis.com/assets-presslogic/nippon/color-front-static/result_ads3.png"
             alt="result"
             width={1500}
             height={1150}
             style={{ width: '100%', height: 'auto' }}
-          />
-          <div className="w-[100%] h-[76px] mt-[-5px] z-[1] pt-[10px] flex items-center justify-center bg-[#02274F]">
+          /> */}
+          {/* <div className="w-[100%] h-[76px] mt-[-5px] z-[1] pt-[10px] flex items-center justify-center bg-[#02274F]">
             <a
               href="https://www.nipponpaint.com.hk/news/news-023/?utm_source=PL&utm_medium=website&utm_campaign=COLORIDLAB
 "
@@ -415,9 +396,9 @@ export default function Result() {
             >
               立即參加
             </a>
-          </div>
+          </div> */}
           <Image
-            src="https://storage.googleapis.com/assets-presslogic/nippon/color-front-static/nippon_ads1-new.png"
+            src="https://storage.googleapis.com/assets-presslogic/nippon/color-front-static/nippon_ads1-new-1128.png"
             alt="result"
             width={1500}
             height={978}
